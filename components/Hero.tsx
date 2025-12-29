@@ -4,35 +4,34 @@ import React from 'react';
 const Hero: React.FC = () => {
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-      {/* Background Image: High-quality Night Battle Artwork */}
+      {/* Background Image: User provided high-quality HLL Artwork */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-[20000ms] scale-110 motion-safe:animate-slow-zoom"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-[30000ms] scale-110 motion-safe:animate-slow-zoom"
         style={{ 
-          // Ein stabilerer Link für das spezifische HLL Nacht-Artwork
-          backgroundImage: 'url(https://images.alphacoders.com/115/1157943.jpg)',
-          filter: 'brightness(65%) contrast(115%) saturate(90%)'
+          backgroundImage: 'url(https://i.imgur.com/hBnusG5.jpeg)',
+          filter: 'brightness(55%) contrast(110%) saturate(85%)'
         }}
       ></div>
       
-      {/* Noise & Texture Overlays */}
-      <div className="absolute inset-0 z-[5] opacity-20 pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]"></div>
+      {/* Texture Overlay: Gritty film grain effect */}
+      <div className="absolute inset-0 z-[5] opacity-25 pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
       
-      {/* Cinematic Overlays */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-black"></div>
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/50 via-transparent to-black/50"></div>
+      {/* Cinematic Gradients for depth and focus */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-transparent to-black"></div>
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/40 via-transparent to-black/40"></div>
       <div className="scanline"></div>
 
       <div className="relative z-20 text-center px-4 max-w-5xl">
-        <div className="inline-block px-4 py-1.5 mb-8 border border-orange-500/40 bg-orange-600/10 rounded-sm text-orange-500 text-sm font-bold tracking-[0.4em] uppercase backdrop-blur-sm animate-pulse">
-          Bereit machen zum Ausrücken
+        <div className="inline-block px-4 py-1.5 mb-8 border border-orange-500/30 bg-orange-600/10 rounded-sm text-orange-500 text-sm font-bold tracking-[0.4em] uppercase backdrop-blur-md animate-pulse">
+          Einsatzbereit melden
         </div>
         
-        <h1 className="text-6xl md:text-9xl font-black mb-8 tracking-tighter leading-none text-white drop-shadow-[0_15px_15px_rgba(0,0,0,1)] select-none uppercase font-oswald">
+        <h1 className="text-6xl md:text-9xl font-black mb-8 tracking-tighter leading-none text-white drop-shadow-[0_20px_20px_rgba(0,0,0,1)] select-none uppercase font-oswald">
           Taktisches <br />
-          <span className="text-orange-600 drop-shadow-[0_0_25px_rgba(234,88,12,0.6)]">Totalversagen</span>
+          <span className="text-orange-600 drop-shadow-[0_0_30px_rgba(234,88,12,0.7)]">Totalversagen</span>
         </h1>
         
-        <p className="text-xl md:text-3xl text-zinc-100 mb-12 font-medium tracking-wide max-w-3xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+        <p className="text-xl md:text-3xl text-zinc-100 mb-12 font-medium tracking-wide max-w-3xl mx-auto drop-shadow-[0_4px_6px_rgba(0,0,0,1)]">
           Wir scheitern dort, wo andere es nicht mal versuchen. <br className="hidden md:block" />
           <span className="text-orange-400 font-bold">Werde Teil der Chaos-Truppe.</span>
         </p>
@@ -42,7 +41,7 @@ const Hero: React.FC = () => {
             href="https://discord.gg/XJ4fFaTDDr" 
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative px-12 py-6 bg-orange-600 hover:bg-orange-500 text-white font-oswald text-2xl rounded-sm shadow-[0_0_30px_rgba(234,88,12,0.4)] transition-all hover:scale-105 active:scale-95 flex items-center gap-4 overflow-hidden"
+            className="group relative px-12 py-6 bg-orange-600 hover:bg-orange-500 text-white font-oswald text-2xl rounded-sm shadow-[0_0_40px_rgba(234,88,12,0.5)] transition-all hover:scale-105 active:scale-95 flex items-center gap-4 overflow-hidden"
           >
             <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12"></div>
             <span className="relative z-10">An die Front (Discord)</span>
@@ -52,7 +51,7 @@ const Hero: React.FC = () => {
             href="https://www.battlemetrics.com/servers/hll/36692122" 
             target="_blank"
             rel="noopener noreferrer"
-            className="px-12 py-6 border-2 border-zinc-700 hover:border-orange-500/60 hover:text-white text-zinc-300 font-oswald text-2xl rounded-sm transition-all flex items-center gap-3 backdrop-blur-md bg-black/40 shadow-xl"
+            className="px-12 py-6 border-2 border-zinc-700 hover:border-orange-500 hover:text-white text-zinc-300 font-oswald text-2xl rounded-sm transition-all flex items-center gap-3 backdrop-blur-md bg-black/40 shadow-xl"
           >
             Server Status
           </a>
@@ -60,9 +59,9 @@ const Hero: React.FC = () => {
       </div>
       
       {/* Animated scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
         <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-zinc-300">Mission Details</span>
-        <div className="w-[1px] h-12 bg-gradient-to-b from-orange-500 to-transparent animate-pulse"></div>
+        <div className="w-[1px] h-12 bg-gradient-to-b from-orange-500 to-transparent animate-bounce"></div>
       </div>
     </div>
   );
