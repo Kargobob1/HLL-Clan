@@ -1,0 +1,7 @@
+{
+  "name": "Taktisches Totalversagen (TTV) - HLL Clan",
+  "description": "Die offizielle Landingpage für den Hell Let Loose Clan 'Taktisches Totalversagen'. Erlebe taktisches Scheitern auf höchstem Niveau.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
