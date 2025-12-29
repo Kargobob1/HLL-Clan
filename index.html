@@ -6,48 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTV - Taktisches Totalversagen</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --army-green: #4b5320;
+            --army-green-light: #6b7340;
+            --army-yellow: #facc15;
+            --army-red: #991b1b;
+            --bg-olive-deep: #141612;
+            --bg-card-olive: rgba(30, 35, 25, 0.8);
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
+            background-color: var(--bg-olive-deep);
+            color: #e2e8f0;
+            overflow-x: hidden;
         }
+
+        /* Military Grain Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
         h1, h2, h3, .font-oswald {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
-        .hero-gradient {
-            background: linear-gradient(to bottom, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 1) 100%);
+
+        .glass-card {
+            background: var(--bg-card-olive);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
         }
-        .scanline {
-            width: 100%;
-            height: 100px;
-            z-index: 10;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
-            opacity: 0.1;
-            position: absolute;
-            bottom: 100%;
-            animation: scanline 10s linear infinite;
+
+        .text-glow-army {
+            text-shadow: 0 0 20px rgba(107, 115, 64, 0.5);
         }
+
+        .btn-army {
+            background-color: var(--army-green);
+            border: 1px solid var(--army-green-light);
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-army:hover {
+            background-color: var(--army-green-light);
+            box-shadow: 0 0 25px rgba(75, 83, 32, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-yellow {
+            background-color: var(--army-yellow);
+            color: #1a1c12;
+            font-weight: 800;
+        }
+
+        .btn-yellow:hover {
+            background-color: #fde047;
+            box-shadow: 0 0 30px rgba(250, 204, 21, 0.3);
+        }
+
+        /* Custom Scrollbar Olive Style */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-olive-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--army-green); border-radius: 0; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--army-yellow); }
+
         @keyframes scanline {
-            0% { bottom: 100%; }
-            100% { bottom: -100px; }
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
-        @keyframes slow-zoom {
-            0% { transform: scale(1.1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1.1); }
+        .scanline::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent, rgba(75, 83, 32, 0.05), transparent);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
         }
-        .animate-slow-zoom {
-            animation: slow-zoom 30s ease-in-out infinite;
-        }
-        /* Markdown Styling inside chat */
-        .prose-chat strong { color: white; font-weight: 800; }
-        .prose-chat p { margin-bottom: 0.75rem; }
-        .prose-chat p:last-child { margin-bottom: 0; }
-        .prose-chat ul, .prose-chat ol { margin-left: 1.25rem; margin-bottom: 0.75rem; }
-        .prose-chat li { list-style-type: decimal; }
     </style>
 <script type="importmap">
 {
@@ -61,7 +107,7 @@
 }
 </script>
 </head>
-<body>
+<body class="scanline">
     <div id="root"></div>
 </body>
 </html>

@@ -10,90 +10,85 @@ import Footer from './components/Footer';
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#0a0a0a]">
+    <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#141612] text-zinc-100">
       <Navbar />
       <main className="flex-grow">
         <Hero />
         
-        <section id="about" className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <section id="about" className="py-32 relative overflow-hidden bg-[#1a1d17]">
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                {/* About Us Text */}
-                <div className="space-y-8">
-                  <h2 className="text-5xl font-bold text-orange-500 font-oswald uppercase">Wer wir sind</h2>
-                  <p className="text-xl leading-relaxed text-zinc-300">
-                    Wir sind ein <span className="text-white font-bold underline decoration-orange-600 decoration-2">Ü30 Gaming Clan</span>. 
-                    Unser Hauptspiel ist aktuell Hell Let Loose, aber wir spielen auch viele andere Spiele. 
-                    Bei uns steht das Miteinander im Vordergrund – wir wollen gemeinsam eine gute Zeit haben.
-                  </p>
-                  <p className="text-zinc-400">
-                    Um Teil unserer Community zu werden, komm einfach auf unseren Discord. 
-                    Dort findest du im Kanal <span className="text-orange-500">#regeln</span> alle weiteren Infos. 
-                    Wir freuen uns darauf, dich kennenzulernen!
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+                {/* About Us Content */}
+                <div className="space-y-12">
+                  <div className="inline-flex items-center gap-3 px-4 py-1 bg-[#4b5320]/20 border border-[#4b5320]/40 text-[#facc15] text-[10px] font-black tracking-[0.4em] uppercase">
+                    Offizielles Briefing
+                  </div>
+                  <h2 className="text-6xl md:text-7xl font-bold text-white font-oswald leading-none">
+                    WIR SIND <br />
+                    <span className="text-[#4b5320]">DIE VETERANEN.</span>
+                  </h2>
+                  <p className="text-xl leading-relaxed text-zinc-400 font-light">
+                    Willkommen beim <span className="text-white font-bold">Taktischen Totalversagen</span>. 
+                    Wir sind mehr als nur ein Clan – wir sind eine Ü30 Gemeinschaft, die den Ernst des Lebens an der Garderobe abgibt. 
+                    Bei uns zählt der Mensch hinter dem MG.
                   </p>
                   
-                  <div className="p-6 bg-zinc-900/80 border border-zinc-800 rounded-xl shadow-xl">
-                    <h3 className="text-xl font-bold text-white mb-4 font-oswald uppercase tracking-wider">Der Weg zum Member</h3>
-                    <p className="text-zinc-400 text-sm mb-4">
-                      Stelle dich im Kanal <span className="text-orange-500 font-bold">#vorstellung</span> vor. 
-                      Erzähle uns wer du bist (Name/Rufname), wie alt du bist und was du gerne spielst.
+                  <div className="grid grid-cols-2 gap-12 py-4 border-y border-[#4b5320]/20">
+                    <div>
+                      <h4 className="text-4xl font-bold text-[#facc15] font-oswald tracking-tighter">Ü30</h4>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Durchschnittsalter</p>
+                    </div>
+                    <div>
+                      <h4 className="text-4xl font-bold text-[#facc15] font-oswald tracking-tighter">Bollwerk</h4>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Heimat-Server</p>
+                    </div>
+                  </div>
+
+                  <div className="p-10 glass-card border-l-8 border-l-[#4b5320] relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#4b5320]/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform"></div>
+                    <h3 className="text-2xl font-bold text-white mb-4 font-oswald tracking-widest uppercase">Der Rekrutierungsweg</h3>
+                    <p className="text-zinc-400 mb-8 font-light">
+                      Kein langes Formular. Komm auf unseren Discord, geh in den Kanal <span className="text-[#facc15] font-bold">#vorstellung</span> und sag wer du bist.
                     </p>
                     <a 
                       href="https://discord.gg/XJ4fFaTDDr" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-orange-500 font-bold hover:text-orange-400 transition-colors"
+                      className="btn-army inline-flex items-center gap-4 px-8 py-4 font-oswald tracking-widest uppercase text-sm"
                     >
-                      Zum Discord Kanal #vorstellung
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                      Jetzt melden
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     </a>
                   </div>
                 </div>
 
-                {/* Rules List (Exact Wording) */}
-                <div className="bg-zinc-900/50 p-10 border border-zinc-800 rounded-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                  </div>
-                  <h3 className="text-3xl font-bold text-white mb-8 font-oswald uppercase border-b border-orange-600 pb-2">Regelwerk</h3>
-                  <ul className="space-y-6 text-zinc-300">
-                    <li className="flex gap-4">
-                      <span className="text-orange-600 font-black text-xl">1)</span>
-                      <span>Seid freundlich zueinander, wer Unfrieden stiftet wird des Servers verwiesen</span>
-                    </li>
-                    <li className="flex gap-4">
-                      <span className="text-orange-600 font-black text-xl">2)</span>
-                      <span>Rechtswidrige Aktivitäten werden nicht geduldet</span>
-                    </li>
-                    <li className="flex gap-4">
-                      <span className="text-orange-600 font-black text-xl">3)</span>
-                      <span>Hier gilt allgemein Meinungsfreiheit, verboten sind jedoch Beleidigungen bzw. Mobbing, Rassismus und Verbreitung von Lügen jeder Art und Spamming in den Kanälen.</span>
-                    </li>
-                    <li className="flex gap-4">
-                      <span className="text-orange-600 font-black text-xl">4)</span>
-                      <span>Die Mitgliedschaft in anderen Clans oder Communities ist explizit erlaubt</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Clan Roles Section */}
-              <div className="mt-20">
-                <h3 className="text-3xl font-bold text-white text-center mb-12 font-oswald uppercase">Unsere Clan-Struktur</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                    { role: '@Besucher', color: 'text-blue-400', desc: 'Gäste die Teile unserer Clan Infrastruktur nutzen können, zB.: Voice Kanäle für Zusammenspiel mit anderen Clans/Communities' },
-                    { role: '@Anwärter', color: 'text-yellow-500', desc: 'Wenn du dich als Member bewirbst, musst du noch eine 3 Monatige Probezeit absolvieren' },
-                    { role: '@Member', color: 'text-green-500', desc: 'Vollwertige Member nach Ablauf der Probezeit wenn es zu keinem Veto der bestehenden Member gibt.' },
-                    { role: '@Moderator', color: 'text-red-600', desc: 'Gründungsmitglieder die den Server administrieren' }
-                  ].map((item, idx) => (
-                    <div key={idx} className="bg-zinc-900 border border-zinc-800 p-6 rounded-lg hover:border-orange-500/30 transition-all">
-                      <div className={`font-black text-xl mb-3 ${item.color}`}>{item.role}</div>
-                      <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
+                {/* Rules Section (Exact Wording) */}
+                <div className="relative pt-12 lg:pt-0">
+                  <div className="absolute -inset-10 bg-[#4b5320]/10 blur-[120px] rounded-full opacity-50"></div>
+                  <div className="relative glass-card p-12 border border-white/5 shadow-2xl">
+                    <div className="flex items-center gap-4 mb-10 border-b border-[#4b5320]/30 pb-6">
+                        <div className="w-12 h-12 bg-[#4b5320] flex items-center justify-center text-white font-black text-2xl font-oswald italic">!</div>
+                        <h3 className="text-4xl font-bold text-white font-oswald tracking-tight">Regelwerk</h3>
                     </div>
-                  ))}
+                    <div className="space-y-10">
+                      {[
+                        "Seid freundlich zueinander, wer Unfrieden stiftet wird des Servers verwiesen",
+                        "Rechtswidrige Aktivitäten werden nicht geduldet",
+                        "Hier gilt allgemein Meinungsfreiheit, verboten sind jedoch Beleidigungen bzw. Mobbing, Rassismus und Verbreitung von Lügen jeder Art und Spamming in den Kanälen.",
+                        "Die Mitgliedschaft in anderen Clans oder Communities ist explizit erlaubt"
+                      ].map((rule, i) => (
+                        <div key={i} className="flex gap-6 group">
+                          <div className="flex-shrink-0 w-8 h-8 bg-zinc-800 text-[#facc15] flex items-center justify-center font-oswald font-bold border border-[#4b5320]/30 group-hover:bg-[#4b5320] group-hover:text-white transition-colors">
+                            0{i+1}
+                          </div>
+                          <p className="text-zinc-300 leading-relaxed pt-0.5 font-light text-sm italic">
+                            "{rule}"
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -103,28 +98,55 @@ const App: React.FC = () => {
         <Features />
         <ServerStatus />
         
-        <section id="ai-officer" className="py-24 bg-black border-y border-zinc-900">
+        <section id="ai-officer" className="py-32 bg-[#141612] relative">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
               <div className="order-2 lg:order-1">
                 <RecruitmentOfficer />
               </div>
-              <div className="order-1 lg:order-2 space-y-8">
-                <div>
-                  <h2 className="text-5xl font-bold text-orange-500 font-oswald mb-4">Der Spieß hat das Wort</h2>
-                  <div className="h-1 w-20 bg-orange-600"></div>
+              <div className="order-1 lg:order-2 space-y-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#991b1b]/10 border border-[#991b1b]/20 text-[#991b1b] text-[10px] font-black tracking-widest uppercase">
+                  KI-Unterstützte Rekrutierung
                 </div>
-                <p className="text-xl text-zinc-400 leading-relaxed">
-                  Hast du Fragen zum Bewerbungsprozess oder zur Probezeit? 
-                  Unser KI-gestützter <span className="text-white font-bold">Feldwebel Versagen</span> ist mit dem aktuellen Regelwerk vertraut. 
-                  Erkläre ihm dein Anliegen, aber fass dich kurz!
+                <h2 className="text-6xl font-bold text-white font-oswald leading-tight">FRAG DEN <br /><span className="text-[#facc15]">SPIESS</span></h2>
+                <p className="text-xl text-zinc-400 leading-relaxed font-light italic">
+                  "Ich habe schon Rekruten wie dich gefrühstückt. Wenn du wissen willst, wie wir hier ticken, frag einfach. Aber mach es kurz!"
                 </p>
-                <div className="p-6 border-l-4 border-orange-500 bg-zinc-900 shadow-xl italic text-lg text-zinc-300">
-                  "Regeln sind da, um eingehalten zu werden. Wer quer schießt, kann seine Sachen packen."
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-6 bg-[#4b5320]/5 border border-[#4b5320]/20 rounded-none">
+                    <span className="block text-[#facc15] font-oswald font-bold mb-2 tracking-widest">STIMMUNG</span>
+                    <span className="text-xs text-zinc-500 uppercase font-mono">Leicht gereizt</span>
+                  </div>
+                  <div className="p-6 bg-[#4b5320]/5 border border-[#4b5320]/20 rounded-none">
+                    <span className="block text-[#facc15] font-oswald font-bold mb-2 tracking-widest">KAFFEE-LEVEL</span>
+                    <span className="text-xs text-zinc-500 uppercase font-mono">Kritisch Niedrig</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </section>
+
+        <section id="roles" className="py-32 bg-[#1a1d17] border-y border-[#4b5320]/10">
+           <div className="container mx-auto px-4">
+             <div className="text-center mb-24">
+                <h2 className="text-5xl font-bold text-white font-oswald mb-6 tracking-widest italic">DIE HIERARCHIE</h2>
+                <div className="w-32 h-1 bg-[#facc15] mx-auto"></div>
+             </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+                {[
+                  { role: '@Besucher', color: 'border-blue-900/40 text-blue-400 bg-blue-900/5', desc: 'Gäste, die unsere Voice Kanäle für gemeinsames Zusammenspiel nutzen können.' },
+                  { role: '@Anwärter', color: 'border-[#facc15]/40 text-[#facc15] bg-[#facc15]/5', desc: 'Die 3-monatige Probezeit für alle, die vollwertiges Mitglied werden wollen.' },
+                  { role: '@Member', color: 'border-[#4b5320]/40 text-[#4b5320] bg-[#4b5320]/5', desc: 'Vollwertige Kameraden nach der Probezeit (Veto-Recht der bestehenden Member).' },
+                  { role: '@Moderator', color: 'border-[#991b1b]/40 text-[#991b1b] bg-[#991b1b]/5', desc: 'Gründungsmitglieder und Administratoren unserer Infrastruktur.' }
+                ].map((item, idx) => (
+                  <div key={idx} className={`p-10 border transition-all hover:-translate-y-2 cursor-default ${item.color}`}>
+                    <div className="text-2xl font-bold mb-6 font-oswald tracking-widest italic">{item.role}</div>
+                    <p className="text-zinc-400 text-sm leading-relaxed font-light">{item.desc}</p>
+                  </div>
+                ))}
+             </div>
+           </div>
         </section>
 
         <JoinSection />
