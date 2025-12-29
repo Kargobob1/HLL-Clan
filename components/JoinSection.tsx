@@ -7,7 +7,7 @@ const JoinSection: React.FC = () => {
       <div className="absolute inset-0 bg-orange-600 opacity-[0.03]"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto bg-zinc-900 border border-zinc-800 p-12 rounded-2xl text-center shadow-2xl">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 font-oswald">Bereit für den Fronteinsatz?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 font-oswald text-white">Bereit für den Fronteinsatz?</h2>
           <p className="text-xl text-zinc-400 mb-10 max-w-2xl mx-auto">
             Wir suchen immer fähige (und unfähige) Mitstreiter, die Bock auf Hell Let Loose haben. 
             Keine Verpflichtungen, nur purer Spielspaß und gelegentliches Fluchen im Funk.
@@ -23,12 +23,10 @@ const JoinSection: React.FC = () => {
               Auf den Discord springen
             </a>
             <a 
-              href="https://www.battlemetrics.com/servers/hll/36692122" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="px-10 py-4 border border-zinc-700 hover:bg-zinc-800 text-white font-bold rounded-lg transition-all"
+              href="steam://connect/176.57.181.105:28215" 
+              className="px-10 py-4 border border-zinc-700 hover:bg-zinc-800 text-white font-bold rounded-lg transition-all text-center"
             >
-              Zum Server-Listing
+              Direkt zum Server
             </a>
           </div>
         </div>

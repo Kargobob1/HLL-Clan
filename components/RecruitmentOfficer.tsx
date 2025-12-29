@@ -1,5 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { chatWithOfficer } from '../services/geminiService';
 
 interface Message {
@@ -19,7 +20,7 @@ const RecruitmentOfficer: React.FC = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -35,53 +36,59 @@ const RecruitmentOfficer: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl flex flex-col h-[500px]">
+    <div className="w-full bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl flex flex-col h-[550px]">
       <div className="bg-zinc-800 p-4 border-b border-zinc-700 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center font-bold">FV</div>
+          <div className="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center font-bold text-white">FV</div>
           <div>
-            <h4 className="font-bold text-sm">Feldwebel Versagen</h4>
-            <p className="text-xs text-green-500 uppercase tracking-widest font-bold animate-pulse">Einsatzbereit</p>
+            <h4 className="font-bold text-sm text-white">Feldwebel Versagen</h4>
+            <p className="text-[10px] text-green-500 uppercase tracking-widest font-bold animate-pulse">Einsatzbereit</p>
           </div>
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex-grow p-4 overflow-y-auto space-y-4 scroll-smooth">
+      <div ref={scrollRef} className="flex-grow p-4 overflow-y-auto space-y-4 scroll-smooth bg-zinc-950/30">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
+            <div className={`max-w-[85%] p-4 rounded-xl text-sm leading-relaxed ${
               m.role === 'user' 
-                ? 'bg-orange-600 text-white' 
-                : 'bg-zinc-800 border border-zinc-700 text-zinc-200'
+                ? 'bg-orange-600 text-white shadow-lg shadow-orange-900/20' 
+                : 'bg-zinc-800 border border-zinc-700 text-zinc-200 shadow-md prose-chat'
             }`}>
-              {m.text}
+              {m.role === 'user' ? (
+                m.text
+              ) : (
+                <ReactMarkdown>{m.text}</ReactMarkdown>
+              )}
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-zinc-800 border border-zinc-700 p-3 rounded-lg text-sm text-zinc-400">
-              <span className="animate-bounce inline-block">.</span>
-              <span className="animate-bounce inline-block delay-75">.</span>
-              <span className="animate-bounce inline-block delay-150">.</span>
+            <div className="bg-zinc-800 border border-zinc-700 p-4 rounded-xl text-sm text-zinc-400">
+              <span className="flex gap-1">
+                <span className="animate-bounce inline-block w-1.5 h-1.5 bg-zinc-500 rounded-full"></span>
+                <span className="animate-bounce inline-block w-1.5 h-1.5 bg-zinc-500 rounded-full delay-75"></span>
+                <span className="animate-bounce inline-block w-1.5 h-1.5 bg-zinc-500 rounded-full delay-150"></span>
+              </span>
             </div>
           </div>
         )}
       </div>
 
-      <div className="p-4 border-t border-zinc-800 flex gap-2">
+      <div className="p-4 border-t border-zinc-800 bg-zinc-900 flex gap-2">
         <input 
           type="text" 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Stell eine Frage, Rekrut..."
-          className="flex-grow bg-zinc-950 border border-zinc-700 rounded px-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition-colors"
+          className="flex-grow bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors text-white placeholder:text-zinc-600"
         />
         <button 
           onClick={handleSend}
           disabled={isLoading}
-          className="bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-700 px-4 py-2 rounded transition-colors"
+          className="bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-800 disabled:text-zinc-600 px-5 py-3 rounded-lg transition-all active:scale-95 flex items-center justify-center"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
         </button>
