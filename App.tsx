@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import TeamSection from './components/TeamSection';
-import ServerStatus from './components/ServerStatus';
-import RecruitmentOfficer from './components/RecruitmentOfficer';
-import JoinSection from './components/JoinSection';
-import Footer from './components/Footer';
+import Navbar from './components/Navbar.tsx';
+import Hero from './components/Hero.tsx';
+import Features from './components/Features.tsx';
+import TeamSection from './components/TeamSection.tsx';
+import ServerStatus from './components/ServerStatus.tsx';
+import RecruitmentOfficer from './components/RecruitmentOfficer.tsx';
+import JoinSection from './components/JoinSection.tsx';
+import Footer from './components/Footer.tsx';
 
 const App: React.FC = () => {
   return (

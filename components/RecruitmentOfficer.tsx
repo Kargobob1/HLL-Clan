@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { chatWithOfficer } from '../services/geminiService';
+import { chatWithOfficer } from '../services/geminiService.ts';
 
 interface Message {
   role: 'user' | 'officer';
