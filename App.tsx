@@ -22,26 +22,26 @@ const App: React.FC = () => {
                 {/* About Us Content */}
                 <div className="space-y-12">
                   <div className="inline-flex items-center gap-3 px-4 py-1 bg-[#4b5320]/20 border border-[#4b5320]/40 text-[#facc15] text-[10px] font-black tracking-[0.4em] uppercase">
-                    Offizielles Briefing
+                    Statusbericht HQ
                   </div>
                   <h2 className="text-6xl md:text-7xl font-bold text-white font-oswald leading-none">
                     WIR SIND <br />
-                    <span className="text-[#4b5320]">DIE VETERANEN.</span>
+                    <span className="text-[#4b5320]">MULTIGAMING.</span>
                   </h2>
                   <p className="text-xl leading-relaxed text-zinc-400 font-light">
                     Willkommen beim <span className="text-white font-bold">Taktischen Totalversagen</span>. 
-                    Wir sind mehr als nur ein Clan – wir sind eine Ü30 Gemeinschaft, die den Ernst des Lebens an der Garderobe abgibt. 
-                    Bei uns zählt der Mensch hinter dem MG.
+                    Wir sind eine Ü30 Multigaming-Community, die den Ernst des Lebens an der Garderobe abgibt. 
+                    Ob wir in HLL die Front halten, in Squad taktieren oder in anderen Welten scheitern – bei uns zählt der Kamerad.
                   </p>
                   
                   <div className="grid grid-cols-2 gap-12 py-4 border-y border-[#4b5320]/20">
                     <div>
-                      <h4 className="text-4xl font-bold text-[#facc15] font-oswald tracking-tighter">Ü30</h4>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Durchschnittsalter</p>
+                      <h4 className="text-4xl font-bold text-[#facc15] font-oswald tracking-tighter">Ü30+</h4>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Community-Basis</p>
                     </div>
                     <div>
-                      <h4 className="text-4xl font-bold text-[#facc15] font-oswald tracking-tighter">Bollwerk</h4>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Heimat-Server</p>
+                      <h4 className="text-4xl font-bold text-[#facc15] font-oswald tracking-tighter">CROSS</h4>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Einsatzgebiete</p>
                     </div>
                   </div>
 
@@ -49,7 +49,7 @@ const App: React.FC = () => {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#4b5320]/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform"></div>
                     <h3 className="text-2xl font-bold text-white mb-4 font-oswald tracking-widest uppercase">Der Rekrutierungsweg</h3>
                     <p className="text-zinc-400 mb-8 font-light">
-                      Kein langes Formular. Komm auf unseren Discord, geh in den Kanal <span className="text-[#facc15] font-bold">#vorstellung</span> und sag wer du bist.
+                      Kein langes Formular. Komm auf unseren Discord, geh in den Kanal <span className="text-[#facc15] font-bold">#vorstellung</span> und sag wer du bist und was du zockst.
                     </p>
                     <a 
                       href="https://discord.gg/XJ4fFaTDDr" 
@@ -57,7 +57,7 @@ const App: React.FC = () => {
                       rel="noopener noreferrer"
                       className="btn-army inline-flex items-center gap-4 px-8 py-4 font-oswald tracking-widest uppercase text-sm"
                     >
-                      Jetzt melden
+                      Im Discord melden
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     </a>
                   </div>
@@ -69,7 +69,7 @@ const App: React.FC = () => {
                   <div className="relative glass-card p-12 border border-white/5 shadow-2xl">
                     <div className="flex items-center gap-4 mb-10 border-b border-[#4b5320]/30 pb-6">
                         <div className="w-12 h-12 bg-[#4b5320] flex items-center justify-center text-white font-black text-2xl font-oswald italic">!</div>
-                        <h3 className="text-4xl font-bold text-white font-oswald tracking-tight">Regelwerk</h3>
+                        <h3 className="text-4xl font-bold text-white font-oswald tracking-tight italic">VERHALTENSREGELN</h3>
                     </div>
                     <div className="space-y-10">
                       {[
@@ -108,18 +108,18 @@ const App: React.FC = () => {
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#991b1b]/10 border border-[#991b1b]/20 text-[#991b1b] text-[10px] font-black tracking-widest uppercase">
                   KI-Unterstützte Rekrutierung
                 </div>
-                <h2 className="text-6xl font-bold text-white font-oswald leading-tight">FRAG DEN <br /><span className="text-[#facc15]">SPIESS</span></h2>
+                <h2 className="text-6xl font-bold text-white font-oswald leading-tight italic">FRAG DEN <br /><span className="text-[#facc15]">SPIESS</span></h2>
                 <p className="text-xl text-zinc-400 leading-relaxed font-light italic">
                   "Ich habe schon Rekruten wie dich gefrühstückt. Wenn du wissen willst, wie wir hier ticken, frag einfach. Aber mach es kurz!"
                 </p>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="p-6 bg-[#4b5320]/5 border border-[#4b5320]/20 rounded-none">
-                    <span className="block text-[#facc15] font-oswald font-bold mb-2 tracking-widest">STIMMUNG</span>
-                    <span className="text-xs text-zinc-500 uppercase font-mono">Leicht gereizt</span>
+                    <span className="block text-[#facc15] font-oswald font-bold mb-2 tracking-widest uppercase">DISZIPLIN</span>
+                    <span className="text-xs text-zinc-500 uppercase font-mono">Taktisch</span>
                   </div>
                   <div className="p-6 bg-[#4b5320]/5 border border-[#4b5320]/20 rounded-none">
-                    <span className="block text-[#facc15] font-oswald font-bold mb-2 tracking-widest">KAFFEE-LEVEL</span>
-                    <span className="text-xs text-zinc-500 uppercase font-mono">Kritisch Niedrig</span>
+                    <span className="block text-[#facc15] font-oswald font-bold mb-2 tracking-widest uppercase">LAUNE</span>
+                    <span className="text-xs text-zinc-500 uppercase font-mono">Multigaming-Modus</span>
                   </div>
                 </div>
               </div>
