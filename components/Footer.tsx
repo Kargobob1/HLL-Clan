@@ -1,7 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import ImpressumModal from './ImpressumModal';
 
 const Footer: React.FC = () => {
+  const [isImpressumOpen, setIsImpressumOpen] = useState(false);
+
   return (
     <footer className="bg-[#0f110d] py-20 border-t border-[#4b5320]/20">
       <div className="container mx-auto px-4">
@@ -19,7 +22,7 @@ const Footer: React.FC = () => {
                 </div>
             </div>
             <p className="text-zinc-500 text-sm max-w-xs leading-relaxed italic">
-              "Taktik ist, wenn man trotzdem lacht." - Die Ü30 Community für entspanntes HLL Gameplay.
+              "Taktik ist, wenn man trotzdem lacht." - Die Ü30 Community für entspanntes Multigaming.
             </p>
           </div>
           
@@ -32,7 +35,12 @@ const Footer: React.FC = () => {
             </div>
             <div className="flex flex-col space-y-4">
                 <h5 className="text-[#facc15] mb-2 tracking-[0.5em]">Legal</h5>
-                <a href="#" className="hover:text-white transition-colors">Impressum</a>
+                <button 
+                  onClick={() => setIsImpressumOpen(true)}
+                  className="text-left hover:text-white transition-colors uppercase"
+                >
+                  Impressum
+                </button>
                 <a href="#" className="hover:text-white transition-colors">Datenschutz</a>
                 <a href="https://discord.gg/XJ4fFaTDDr" target="_blank" className="hover:text-white transition-colors">Support</a>
             </div>
@@ -55,6 +63,11 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Taktisches Totalversagen. Inoffizielle Fan-Seite. Alle Rechte bei den jeweiligen Eigentümern.
         </div>
       </div>
+
+      <ImpressumModal 
+        isOpen={isImpressumOpen} 
+        onClose={() => setIsImpressumOpen(false)} 
+      />
     </footer>
   );
 };
