@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import ImpressumModal from './ImpressumModal';
+import ImpressumModal from './ImpressumModal.tsx';
 
 const Footer: React.FC = () => {
   const [isImpressumOpen, setIsImpressumOpen] = useState(false);
