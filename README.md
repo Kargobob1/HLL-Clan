@@ -1,20 +1,30 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# TTV Landing Page - Technical Documentation
 
-# Run and deploy your AI Studio app
+Technisches Repository der "Taktisches Totalversagen" Community Web-Applikation.
 
-This contains everything you need to run your app locally.
+## Tech-Stack
+- **Frontend Core**: React 19.0 (TypeScript)
+- **Styling**: Tailwind CSS (JIT Engine)
+- **Runtime**: Browser Native ESM (via Importmaps)
+- **Services**: Google Generative AI SDK (Recruitment Bot Integration)
+- **Deployment**: Statisches Hosting (Vercel/Netlify/S3)
 
-View your app in AI Studio: https://ai.studio/apps/drive/18GWFQXtnnRkDpR0WMCdlY2lkCkPjZOZP
+## Architektur-Übersicht
+Das Projekt ist als Single Page Application (SPA) konzipiert. Die Auflösung der Abhängigkeiten erfolgt zur Laufzeit über `esm.sh`, was einen klassischen Build-Step hinfällig macht und die Ladezeiten optimiert.
 
-## Run Locally
+### Kern-Module
+- `App.tsx`: Zentraler State-Handler und Layout-Manager.
+- `services/geminiService.ts`: Abstraktionslayer für die LLM-Schnittstelle.
+- `components/`: Modulare UI-Einheiten (Server-Status via REST-Widget, Recruitment Bot via Stream-API).
 
-**Prerequisites:**  Node.js
+## Konfiguration
+Die Applikation benötigt folgende Umgebungsvariablen für den vollen Funktionsumfang:
+- `process.env.API_KEY`: Google Gemini API Key für den Recruitment-Service.
 
+## Lokale Ausführung
+1. Repository klonen.
+2. Lokalen Server starten (z.B. `npx serve` oder Vite).
+3. API-Key in der Systemumgebung hinterlegen.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+**Build-Status:** Stable | **Environment:** Production ready
