@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             <div className="flex flex-col space-y-4">
                 <h5 className="text-[#facc15] mb-2 tracking-[0.5em]">Navigation</h5>
                 <a href="#" className="hover:text-white transition-colors">Startseite</a>
-                <a href="#about" className="hover:text-white transition-colors">Das Team</a>
+                <a href="#team" className="hover:text-white transition-colors">Das Team</a>
                 <a href="#server" className="hover:text-white transition-colors">Server</a>
             </div>
             <div className="flex flex-col space-y-4">

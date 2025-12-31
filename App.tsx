@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
+import TeamSection from './components/TeamSection';
 import ServerStatus from './components/ServerStatus';
 import RecruitmentOfficer from './components/RecruitmentOfficer';
 import JoinSection from './components/JoinSection';
@@ -96,6 +97,7 @@ const App: React.FC = () => {
         </section>
         
         <Features />
+        <TeamSection />
         <ServerStatus />
         
         <section id="ai-officer" className="py-32 bg-[#141612] relative">
