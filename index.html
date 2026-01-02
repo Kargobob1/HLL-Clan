@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -17,6 +16,12 @@
             --bg-card-olive: rgba(30, 35, 25, 0.8);
         }
         
+        html {
+            scroll-behavior: smooth;
+            /* Offset für die fixierte Navbar, damit Sektions-Header nicht verdeckt werden */
+            scroll-padding-top: 100px;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-olive-deep);
