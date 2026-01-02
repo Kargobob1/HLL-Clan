@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
           <div className="flex flex-col space-y-8">
             <div className="flex items-center space-x-4">
                 <img 
-                  src="https://www.taktisches-totalversagen.de/wp-content/uploads/go-x/u/afb06e94-8863-4d10-b1a4-8bdd8c6c4345/image-455x455.png" 
+                  src="https://i.imgur.com/OqJyLQG.png" 
                   alt="TTV Logo" 
                   className="w-16 h-16 object-contain"
                 />

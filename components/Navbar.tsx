@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
         <a href="#" className="flex items-center space-x-4 group cursor-pointer">
           <img 
-            src="https://www.taktisches-totalversagen.de/wp-content/uploads/go-x/u/afb06e94-8863-4d10-b1a4-8bdd8c6c4345/image-455x455.png" 
+            src="https://i.imgur.com/OqJyLQG.png" 
             alt="TTV Logo" 
             className="w-10 h-10 object-contain group-hover:rotate-12 transition-transform duration-500"
           />
