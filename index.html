@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="theme-military">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,38 +7,61 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --army-green: #4b5320;
-            --army-green-light: #6b7340;
-            --army-yellow: #facc15;
-            --army-red: #991b1b;
-            --bg-olive-deep: #141612;
-            --bg-card-olive: rgba(30, 35, 25, 0.8);
+        /* THEME DEFINITIONS */
+        .theme-military {
+            --primary: #4b5320;
+            --primary-light: #6b7340;
+            --accent: #facc15;
+            --accent-glow: rgba(250, 204, 21, 0.4);
+            --bg-deep: #141612;
+            --bg-offset: #1a1d17;
+            --card-bg: rgba(30, 35, 25, 0.85);
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --border: rgba(75, 83, 32, 0.3);
+            --noise-opacity: 0.05;
+            --scanline-opacity: 0.03;
         }
-        
+
+        .theme-normal {
+            --primary: #4f46e5; /* Sanftes Indigo */
+            --primary-light: #6366f1;
+            --accent: #10b981; /* Angenehmes Emerald/Grün */
+            --accent-glow: rgba(16, 185, 129, 0.3);
+            --bg-deep: #0a0a0a;
+            --bg-offset: #171717;
+            --card-bg: rgba(23, 23, 23, 0.8);
+            --text-main: #fafafa;
+            --text-muted: #a3a3a3;
+            --border: rgba(255, 255, 255, 0.1);
+            --noise-opacity: 0.01;
+            --scanline-opacity: 0.005;
+        }
+
         html {
             scroll-behavior: smooth;
-            /* Offset für die fixierte Navbar, damit Sektions-Header nicht verdeckt werden */
-            scroll-padding-top: 100px;
+            scroll-padding-top: 80px;
+            transition: background-color 0.5s ease;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-olive-deep);
-            color: #e2e8f0;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             overflow-x: hidden;
             margin: 0;
+            transition: color 0.3s ease, background-color 0.5s ease;
         }
 
-        /* Military Grain Overlay */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-            opacity: 0.05;
+            opacity: var(--noise-opacity);
             pointer-events: none;
             z-index: 9999;
+            transition: opacity 0.5s ease;
         }
 
         h1, h2, h3, .font-oswald {
@@ -48,45 +71,47 @@
         }
 
         .glass-card {
-            background: var(--bg-card-olive);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
             box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
 
-        .text-glow-army {
-            text-shadow: 0 0 20px rgba(107, 115, 64, 0.5);
+        .text-glow {
+            text-shadow: 0 0 20px var(--accent-glow);
         }
 
-        .btn-army {
-            background-color: var(--army-green);
-            border: 1px solid var(--army-green-light);
+        .btn-primary {
+            background-color: var(--primary);
+            border: 1px solid var(--primary-light);
             color: white;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn-army:hover {
-            background-color: var(--army-green-light);
-            box-shadow: 0 0 25px rgba(75, 83, 32, 0.4);
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            box-shadow: 0 0 25px var(--accent-glow);
             transform: translateY(-2px);
         }
 
-        .btn-yellow {
-            background-color: var(--army-yellow);
-            color: #1a1c12;
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--bg-deep);
             font-weight: 800;
+            transition: all 0.3s ease;
         }
 
-        .btn-yellow:hover {
-            background-color: #fde047;
-            box-shadow: 0 0 30px rgba(250, 204, 21, 0.3);
+        .btn-accent:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
         }
 
-        /* Custom Scrollbar Olive Style */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-olive-deep); }
-        ::-webkit-scrollbar-thumb { background: var(--army-green); border-radius: 0; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--army-yellow); }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 0; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         @keyframes scanline {
             0% { transform: translateY(-100%); }
@@ -96,12 +121,12 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent, rgba(75, 83, 32, 0.05), transparent);
-            animation: scanline 8s linear infinite;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, var(--scanline-opacity)), transparent);
+            animation: scanline 10s linear infinite;
             pointer-events: none;
+            z-index: 50;
         }
 
-        /* Animation for reveal */
         @keyframes reveal {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -126,7 +151,6 @@
 </head>
 <body class="scanline">
     <div id="root"></div>
-    <!-- WICHTIG: Explizites Laden des Einstiegspunkts -->
     <script type="module" src="index.tsx"></script>
 </body>
 </html>

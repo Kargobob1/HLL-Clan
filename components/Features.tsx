@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface FeatureCardProps {
@@ -8,12 +7,12 @@ interface FeatureCardProps {
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon }) => (
-  <div className="glass-card p-10 rounded-2xl transition-all group hover:border-amber-500/30">
-    <div className="w-14 h-14 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 mb-8 group-hover:scale-110 transition-transform duration-500">
+  <div className="glass-card p-10 rounded-none transition-all group hover:border-[var(--accent)]/50">
+    <div className="w-14 h-14 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-none flex items-center justify-center text-[var(--accent)] mb-8 group-hover:scale-110 group-hover:bg-[var(--primary)] group-hover:text-white transition-all duration-500">
       {icon}
     </div>
     <h3 className="text-2xl font-bold mb-4 font-oswald text-white tracking-wide">{title}</h3>
-    <p className="text-zinc-400 leading-relaxed font-light">{description}</p>
+    <p className="text-zinc-400 leading-relaxed font-light text-sm">{description}</p>
   </div>
 );
 
@@ -21,7 +20,7 @@ const Features: React.FC = () => {
   return (
     <section className="py-24 bg-transparent relative">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <FeatureCard 
             title="Keine Pflichten"
             description="Reallife geht immer vor. Wir haben keine Trainingspflicht oder festen Anwesenheitszwang. Zock wenn du Zeit und Lust hast."
