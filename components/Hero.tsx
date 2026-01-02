@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
         <div className="mb-8 relative">
            <div className="absolute inset-0 bg-[var(--primary)]/30 blur-[80px] rounded-full"></div>
            <img 
-            src="https://www.taktisches-totalversagen.de/wp-content/uploads/go-x/u/afb06e94-8863-4d10-b1a4-8bdd8c6c4345/image-455x455.png" 
+            src="https://i.imgur.com/OqJyLQG.png" 
             alt="TTV Clan Logo" 
             className="w-28 h-28 md:w-48 md:h-48 object-contain drop-shadow-[0_0_40px_rgba(0,0,0,0.5)] transition-all duration-700 hover:scale-105"
           />
