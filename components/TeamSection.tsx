@@ -1,34 +1,26 @@
-
 import React from 'react';
 
 const teamMembers = [
   {
-    rank: "General",
-    name: "Versagen",
-    role: "Gründer & Strategisches Chaos",
-    specialty: "Friendly Fire Enthusiast",
-    avatar: "GV"
+    rank: "Generalstab",
+    name: "Knödeltiger",
+    role: "Gründer & Strategische Leitung",
+    specialty: "Taktisches Chaos-Management",
+    avatar: "KT"
   },
   {
-    rank: "Major",
-    name: "Logistik",
-    role: "Server-Technik & Infrastruktur",
-    specialty: "Kabelmanagement-Veteran",
-    avatar: "ML"
+    rank: "Generalstab",
+    name: "Isnaton",
+    role: "Gründer & Infrastruktur",
+    specialty: "Sektor-Sicherung & IT-Logistik",
+    avatar: "IS"
   },
   {
-    rank: "Leutnant",
-    name: "Lärm",
-    role: "Community & Kommunikation",
-    specialty: "Discord-Drill-Sergeant",
-    avatar: "LL"
-  },
-  {
-    rank: "Adjutant",
-    name: "Archiv",
-    role: "Moderation & Protokoll",
-    specialty: "Bannhammer-Spezialist",
-    avatar: "AA"
+    rank: "Generalstab",
+    name: "Caro",
+    role: "Gründerin & Personalwesen",
+    specialty: "Diplomatie & Community-Zusammenhalt",
+    avatar: "CA"
   }
 ];
 
@@ -37,21 +29,21 @@ const TeamSection: React.FC = () => {
     <section id="team" className="py-32 bg-[#141612] relative overflow-hidden">
       {/* Background Graphic */}
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none flex items-center justify-center">
-        <span className="text-[20vw] font-black font-oswald select-none">PERSONALE</span>
+        <span className="text-[20vw] font-black font-oswald select-none">KOMMANDO</span>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-24">
           <div className="inline-block px-4 py-1 bg-[#4b5320]/10 border border-[#4b5320]/30 text-[#facc15] text-[10px] font-black tracking-[0.4em] uppercase mb-6">
-            Kommando-Ebene
+            Oberkommando TTV
           </div>
-          <h2 className="text-5xl md:text-6xl font-bold text-white font-oswald italic tracking-tight mb-8">DAS TEAM</h2>
+          <h2 className="text-5xl md:text-6xl font-bold text-white font-oswald italic tracking-tight mb-8">DIE FÜHRUNGSRIEGE</h2>
           <p className="text-zinc-500 font-light tracking-widest uppercase text-sm">
-            Hinter jedem Totalversagen steht ein kompetentes Team, das weiß, wie man professionell scheitert.
+            Hinter jedem glorreichen Totalversagen stehen Köpfe, die das Chaos koordinieren.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto justify-center">
           {teamMembers.map((member, idx) => (
             <div key={idx} className="group relative">
               {/* Folder/Dossier Look */}
@@ -65,7 +57,7 @@ const TeamSection: React.FC = () => {
                    
                    {/* Stencil Rank */}
                    <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-[#4b5320]/20 text-[10px] font-mono text-zinc-500 uppercase tracking-tighter">
-                     ID: {1000 + idx}-TTV
+                     ID: {2024 + idx}-FOUNDER
                    </div>
                 </div>
 
