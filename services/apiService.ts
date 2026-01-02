@@ -1,11 +1,22 @@
 
 /**
  * CRCON API SERVICE - TTV CLAN
- * Greift auf die lokale Vercel API-Route zu, die als Proxy fungiert.
+ * Nutzt den Proxy-Endpoint um Mixed Content und CORS Probleme zu umgehen.
  */
 
-// Pfad zur lokalen API-Route (relativ zum Frontend)
-const API_ENDPOINT = '/api/game-stats';
+const PROXY_ENDPOINT = '/api/game-stats';
+
+export interface GameState {
+  allied_score: number;
+  axis_score: number;
+  time_remaining: string;
+  current_map: {
+    pretty_name: string;
+    name: string;
+  } | string;
+  num_allied_players: number;
+  num_axis_players: number;
+}
 
 export interface PlayerStat {
   player: string;
@@ -23,51 +34,50 @@ export interface PlayerStat {
 
 export interface LiveStatsResponse {
   stats: PlayerStat[];
-  gamestate: {
-    allied_score: number;
-    axis_score: number;
-    time_remaining: string;
-    current_map: {
-      pretty_name: string;
-      name: string;
-    } | string;
-    num_allied_players: number;
-    num_axis_players: number;
-  };
+  gamestate: GameState;
 }
 
 class CRCON_API_Service {
   /**
-   * Holt die Live-Statistiken über den internen API-Proxy.
+   * Abruf der Live-Statistiken über den Proxy.
    */
   async getLiveStats(): Promise<LiveStatsResponse | null> {
     try {
-      const response = await fetch(API_ENDPOINT, {
+      // Nutze direkten relativen Pfad
+      const response = await fetch(PROXY_ENDPOINT, {
         method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        },
-        cache: 'no-store'
+        headers: { 
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
       });
 
       if (!response.ok) {
-        // Versuche Fehlernachricht aus dem JSON zu extrahieren
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP-Fehler: ${response.status}`);
+        // Bei 404 oder anderen Fehlern versuchen wir die Fehlermeldung zu extrahieren
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Server-Fehler: ${response.status}`);
+        } else {
+          if (response.status === 404) {
+             throw new Error(`Der API-Proxy unter '${PROXY_ENDPOINT}' konnte nicht erreicht werden. (404 Not Found)`);
+          }
+          throw new Error(`Netzwerkfehler: ${response.status}`);
+        }
       }
 
       const data = await response.json();
       
-      // Falls die API ein "failed" Flag im Body sendet (wie CRCON oft tut)
-      if (data.failed) {
-        throw new Error(data.error || "Die Spiele-API meldete einen Fehler.");
+      // CRCON hüllt die Daten meist in ein 'result' Objekt
+      const payload = data.result || data;
+
+      if (payload.failed) {
+        throw new Error(payload.error || "Remote-API Fehler");
       }
 
-      // CRCON hüllt die eigentlichen Daten meist in ein 'result' Objekt
-      // Wir geben direkt das zurück, was das Dashboard erwartet
-      return data.result || data;
+      return payload as LiveStatsResponse;
     } catch (err: any) {
-      console.error("Dashboard Fetch Error:", err);
+      console.error("Dashboard Service Error:", err);
       throw err;
     }
   }

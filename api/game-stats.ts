@@ -1,11 +1,15 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+/**
+ * Serverless Proxy für HLL Game Stats
+ * Ziel: Umgehung von Mixed Content (HTTPS -> HTTP) und CORS.
+ */
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
-  // CORS Header setzen
+  // CORS-Header Konfiguration
   response.setHeader('Access-Control-Allow-Credentials', 'true');
   response.setHeader('Access-Control-Allow-Origin', '*');
   response.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -14,12 +18,11 @@ export default async function handler(
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle OPTIONS Request (Preflight)
   if (request.method === 'OPTIONS') {
-    response.status(200).end();
-    return;
+    return response.status(200).end();
   }
 
+  // Die vom Nutzer bestätigte URL des HLL-RCON-Servers
   const TARGET_URL = 'http://85.215.162.180:8010/api/get_live_game_stats';
 
   try {
@@ -30,19 +33,26 @@ export default async function handler(
       },
     });
 
+    const data = await apiResponse.json().catch(() => null);
+
     if (!apiResponse.ok) {
-      throw new Error(`Externer Server antwortete mit Status: ${apiResponse.status}`);
+      return response.status(apiResponse.status).json({
+        failed: true,
+        error: `Der HLL-Server (Remote) antwortete mit Status ${apiResponse.status}.`,
+        details: apiResponse.statusText,
+        remote_data: data
+      });
     }
 
-    const data = await apiResponse.json();
-
-    // Sende die Daten an das Frontend zurück
+    // Cache-Control setzen um veraltete Dashboard-Daten zu vermeiden
+    response.setHeader('Cache-Control', 'no-store, max-age=0');
     return response.status(200).json(data);
   } catch (error: any) {
-    console.error('Proxy Error:', error);
+    console.error('Proxy Fetch Error:', error);
     return response.status(500).json({
       failed: true,
-      error: error.message || 'Interner Serverfehler beim Abrufen der Daten',
+      error: 'Verbindung zum HLL-Server fehlgeschlagen.',
+      details: error.message
     });
   }
 }
