@@ -249,7 +249,6 @@ const PlayerDossier: React.FC<DossierProps> = ({ player, onClose }) => {
                  <div className="space-y-4">
                     <h4 className="font-oswald text-[var(--accent)] text-xs tracking-[0.3em] uppercase font-black border-b border-white/5 pb-2">Meiste Eliminierungen</h4>
                     <div className="space-y-2">
-                       {/* Added explicit type casting to resolve arithmetic operation errors on potentially unknown object entry values */}
                        {Object.keys(player.most_killed).length > 0 ? Object.entries(player.most_killed).sort((a,b) => (b[1] as number) - (a[1] as number)).slice(0, 5).map(([name, count]) => (
                          <div key={name} className="flex justify-between items-center bg-red-900/10 p-2 border border-red-500/10">
                             <span className="text-[10px] text-zinc-300 font-bold uppercase truncate pr-4">{name}</span>
@@ -265,7 +264,6 @@ const PlayerDossier: React.FC<DossierProps> = ({ player, onClose }) => {
                  <div className="space-y-4">
                     <h4 className="font-oswald text-[var(--accent)] text-xs tracking-[0.3em] uppercase font-black border-b border-white/5 pb-2">Gefahrenanalyse (Tode durch)</h4>
                     <div className="space-y-2">
-                       {/* Added explicit type casting to resolve arithmetic operation errors on potentially unknown object entry values */}
                        {Object.keys(player.death_by).length > 0 ? Object.entries(player.death_by).sort((a,b) => (b[1] as number) - (a[1] as number)).slice(0, 5).map(([name, count]) => (
                          <div key={name} className="flex justify-between items-center bg-zinc-900 p-2 border border-white/5">
                             <span className="text-[10px] text-zinc-500 font-bold uppercase truncate pr-4">{name}</span>
@@ -275,11 +273,8 @@ const PlayerDossier: React.FC<DossierProps> = ({ player, onClose }) => {
                     </div>
                  </div>
 
-                 <div className="p-6 bg-black/40 border border-[var(--primary)]/30">
-                    <h5 className="font-oswald text-[10px] text-zinc-500 tracking-widest uppercase mb-4">Analyse-Notiz</h5>
-                    <p className="text-[11px] leading-relaxed text-zinc-400 italic">
-                      "Dieser Soldat zeigt {player.combat > 300 ? 'überdurchschnittliche' : 'stabile'} Einsatzbereitschaft im Sektor {player.team === 'allied' ? 'Alliierten' : 'Achsenmächte'}. Regelmäßige Wartung der Ausrüstung empfohlen."
-                    </p>
+                 <div className="p-6 bg-black/10 border border-white/5 opacity-40">
+                    <span className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest italic">Dokumentende // Dossier Ende</span>
                  </div>
               </div>
 
