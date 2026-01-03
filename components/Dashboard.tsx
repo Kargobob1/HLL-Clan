@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { api, FullScoreboardData, PlayerCombatStats, SquadMember, TeamData } from '../services/apiService.ts';
 
 // --- Icons & Config ---
@@ -30,38 +30,6 @@ const formatTime = (seconds: number) => {
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 };
 
-// --- Helper Functions ---
-
-const resolveTeam = (playerId: string, teamView: FullScoreboardData['team_view']): 'allies' | 'axis' | 'unknown' => {
-  if (!teamView || !teamView.allies || !teamView.axis) return 'unknown';
-
-  // Check Allies
-  if (teamView.allies.commander?.player_id === playerId) return 'allies';
-  
-  const alliesSquads = teamView.allies.squads || {};
-  for (const squad of Object.values(alliesSquads)) {
-    if (squad?.members?.some(m => m.player_id === playerId)) return 'allies';
-  }
-  
-  // Safe Access: Ensure array exists before calling .some()
-  const alliesUnassigned = teamView.allies.unassigned || [];
-  if (alliesUnassigned.some(m => m.player_id === playerId)) return 'allies';
-
-  // Check Axis
-  if (teamView.axis.commander?.player_id === playerId) return 'axis';
-  
-  const axisSquads = teamView.axis.squads || {};
-  for (const squad of Object.values(axisSquads)) {
-    if (squad?.members?.some(m => m.player_id === playerId)) return 'axis';
-  }
-
-  // Safe Access: Ensure array exists before calling .some()
-  const axisUnassigned = teamView.axis.unassigned || [];
-  if (axisUnassigned.some(m => m.player_id === playerId)) return 'axis';
-
-  return 'unknown';
-};
-
 // --- Components ---
 
 const Dashboard: React.FC = () => {
@@ -70,6 +38,10 @@ const Dashboard: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<'squads' | 'table'>('squads');
+  
+  // Debug State
+  const [fetchCount, setFetchCount] = useState(0);
+  const [lastFetchTime, setLastFetchTime] = useState<string>('-');
   
   // Filter & Sort State
   const [minPlaytime, setMinPlaytime] = useState(0); // Minutes
@@ -80,13 +52,19 @@ const Dashboard: React.FC = () => {
   // Timer for Progress Bar
   const [secondsUntilUpdate, setSecondsUntilUpdate] = useState(15);
 
+  // Stable Load Function (wrapped in useCallback with no deps)
   const loadData = useCallback(async (isBackground = false) => {
     if (isBackground) setIsRefreshing(true);
+    const now = new Date();
+    console.log(`[Dashboard] Triggering loadData. Background: ${isBackground}`);
+    
     try {
       const result = await api.getLiveStats();
       if (result) {
         setData(result);
-        setLastUpdated(new Date());
+        setLastUpdated(now);
+        setFetchCount(c => c + 1);
+        setLastFetchTime(now.toLocaleTimeString());
       }
     } catch (err) {
       console.error("Dashboard Update Failed", err);
@@ -105,24 +83,40 @@ const Dashboard: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Robust Polling using setTimeout (better than setInterval for async)
+  // Robust Polling Effect with Empty Dependency Array
   useEffect(() => {
+    let isMounted = true;
     let timeoutId: NodeJS.Timeout;
-    
+
     const runUpdateLoop = async () => {
-      await loadData(true);
-      // Schedule next update after 15 seconds
-      timeoutId = setTimeout(runUpdateLoop, 15000);
+      console.log(`[EffectLoop] Starting cycle at ${new Date().toISOString()}`);
+      
+      if (isMounted) {
+        // We call loadData, but we assume loadData is stable or we access it directly.
+        // Since loadData is defined with useCallback([]) in the same component scope,
+        // we can safely call it.
+        await loadData(true);
+      }
+
+      if (isMounted) {
+        console.log(`[EffectLoop] Scheduling next update in 15000ms`);
+        timeoutId = setTimeout(runUpdateLoop, 15000);
+      }
     };
 
-    // Initial load
+    // Initial Load immediately
     loadData(false).then(() => {
-      // Start loop after initial load
-      timeoutId = setTimeout(runUpdateLoop, 15000);
+      if (isMounted) {
+         timeoutId = setTimeout(runUpdateLoop, 15000);
+      }
     });
 
-    return () => clearTimeout(timeoutId);
-  }, [loadData]);
+    return () => {
+      console.log("[EffectLoop] Cleanup: Dashboard unmounted");
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []); // Explicitly empty dependency array to run only on mount
 
   // --- Aggregation & Processing ---
 
@@ -130,32 +124,68 @@ const Dashboard: React.FC = () => {
     const emptyTeamStats = { kills: 0, deaths: 0, combat: 0, support: 0, count: 0 };
     const emptyHighlights = { maxKills: 0, maxSupport: 0, maxLife: 0 };
 
-    // Strict check for required data structure
     if (!data || !data.stats || !data.team_view) return { 
       players: [], 
       highlights: emptyHighlights, 
       teamStats: { allies: { ...emptyTeamStats }, axis: { ...emptyTeamStats } } 
     };
 
+    // 1. Build a fast lookup map for Player ID -> Team
+    // This replaces the repeated 'resolveTeam' logic and fixes the property access issues.
+    const playerTeamMap = new Map<string, 'allies' | 'axis'>();
+
+    const mapTeamData = (teamName: 'allies' | 'axis') => {
+      const teamData = data.team_view[teamName];
+      if (!teamData) return;
+
+      // Map Commander
+      if (teamData.commander) {
+        playerTeamMap.set(teamData.commander.player_id, teamName);
+      }
+
+      // Map Squad Players
+      // squads is a Dictionary (Object), so we iterate values.
+      // API uses 'players' property, not 'members'.
+      if (teamData.squads) {
+        Object.values(teamData.squads).forEach((squad: any) => {
+          if (squad && Array.isArray(squad.players)) {
+            squad.players.forEach((p: any) => {
+              if (p.player_id) playerTeamMap.set(p.player_id, teamName);
+            });
+          }
+        });
+      }
+
+      // Map Unassigned
+      // Handling varied structure: sometimes it's an array, sometimes nested under squads.unassigned.players
+      if (teamData.unassigned && Array.isArray(teamData.unassigned)) {
+         teamData.unassigned.forEach((p: any) => playerTeamMap.set(p.player_id, teamName));
+      } 
+    };
+
+    mapTeamData('allies');
+    mapTeamData('axis');
+
+    // 2. Aggregate Stats using the map
     let maxKills = 0;
     let maxSupport = 0;
     let maxLife = 0;
 
-    // Team Aggregations
     const teamStats = {
       allies: { kills: 0, deaths: 0, combat: 0, support: 0, count: 0 },
       axis: { kills: 0, deaths: 0, combat: 0, support: 0, count: 0 }
     };
 
     const enrichedPlayers = data.stats.map(stat => {
-      const team = resolveTeam(stat.player_id, data.team_view);
+      // Lookup team from our pre-calculated map, default to 'unknown'
+      const team = playerTeamMap.get(stat.player_id) || 'unknown';
       
-      // Update Max Values for Highlights
+      // Update Max Values
       if (stat.kills > maxKills) maxKills = stat.kills;
       if (stat.support > maxSupport) maxSupport = stat.support;
       if ((stat.longest_life_secs || 0) > maxLife) maxLife = stat.longest_life_secs || 0;
 
-      // Update Team Stats
+      // Update Team Totals
       if (team !== 'unknown') {
         teamStats[team].kills += stat.kills;
         teamStats[team].deaths += stat.deaths;
@@ -223,6 +253,12 @@ const Dashboard: React.FC = () => {
                  Live Feed {isRefreshing ? '(REFRESH)' : `(${secondsUntilUpdate}s)`}
                </span>
             </div>
+            
+            {/* Debug Info Overlay (Small) */}
+            <div className="absolute bottom-2 right-2 text-[8px] font-mono text-zinc-700 opacity-50 pointer-events-none">
+               Fetches: {fetchCount} | Last: {lastFetchTime}
+            </div>
+
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 h-full">
               <div className="text-center md:text-left z-10">
                 <span className="block text-[var(--accent)] text-[10px] md:text-xs font-black tracking-[0.4em] uppercase mb-2">Einsatzgebiet</span>
@@ -384,11 +420,15 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        <div className="text-center pt-12 border-t border-white/5 flex items-center justify-center gap-2">
-           {isRefreshing && <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-ping"></div>}
-           <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
-             Datenaktualisierung: {lastUpdated.toLocaleTimeString()} // Synchronisiert mit HLL RCON {isRefreshing ? '(wird aktualisiert...)' : ''}
-           </p>
+        <div className="text-center pt-12 border-t border-white/5 flex flex-col items-center justify-center gap-2">
+           <div className="flex items-center gap-2">
+             {isRefreshing && <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-ping"></div>}
+             <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
+               Datenaktualisierung: {lastUpdated.toLocaleTimeString()} // Synchronisiert mit HLL RCON {isRefreshing ? '(wird aktualisiert...)' : ''}
+             </p>
+           </div>
+           {/* Visual Refresh Counter for Debugging */}
+           <p className="text-[8px] font-mono text-zinc-700">Debug: Fetch #{fetchCount} | Update in {secondsUntilUpdate}s</p>
         </div>
       </div>
     </div>
@@ -472,8 +512,8 @@ const TeamColumn = ({ teamData, allStats, teamName, theme, highlights }: any) =>
       {/* Squads */}
       <div className="space-y-4">
         {Object.values(squads).map((squad: any, idx: number) => {
-          // Squad Aggregation Safe Check
-          const members = squad.members || [];
+          // Squad Aggregation Safe Check: Use .players instead of .members
+          const members = squad.players || [];
           const squadKills = members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.kills || 0), 0);
           const squadCombat = members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.combat || 0), 0);
           
