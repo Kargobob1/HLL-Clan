@@ -84,8 +84,10 @@ export default async function handler(
       }
     };
 
-    // Cache-Control: Kurzzeitiges Caching (10s)
-    response.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=5');
+    // NO CACHE: Wir wollen Echtzeit-Daten vom Game-Server
+    response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.setHeader('Pragma', 'no-cache');
+    response.setHeader('Expires', '0');
     
     return response.status(200).json(aggregatedData);
 
