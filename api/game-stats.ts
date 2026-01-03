@@ -5,6 +5,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
  * Serverless Proxy für HLL Game Stats (Erweitert)
  * Aggregiert Daten von gamestate, live_stats und team_view.
  * Fix: Verwendet korrekte HTTP-Methoden und API-Key.
+ * Update: Verbessertes Parsing der CRCON result-Wrapper und Error-Handling.
  */
 export default async function handler(
   request: VercelRequest,
@@ -53,14 +54,14 @@ export default async function handler(
       })
     ]);
 
-    // Detailliertes Error Handling
+    // HTTP-Level Error Handling
     if (!gamestateRes.ok || !statsRes.ok || !teamviewRes.ok) {
       const errors = [];
-      if(!gamestateRes.ok) errors.push(`Gamestate: ${gamestateRes.status}`);
-      if(!statsRes.ok) errors.push(`Stats: ${statsRes.status}`);
-      if(!teamviewRes.ok) errors.push(`TeamView: ${teamviewRes.status}`);
+      if(!gamestateRes.ok) errors.push(`Gamestate HTTP: ${gamestateRes.status}`);
+      if(!statsRes.ok) errors.push(`Stats HTTP: ${statsRes.status}`);
+      if(!teamviewRes.ok) errors.push(`TeamView HTTP: ${teamviewRes.status}`);
       
-      throw new Error(`API Failure: ${errors.join(', ')}`);
+      throw new Error(`API HTTP Failure: ${errors.join(', ')}`);
     }
 
     const [gamestateData, statsData, teamviewData] = await Promise.all([
@@ -69,11 +70,20 @@ export default async function handler(
       teamviewRes.json()
     ]);
 
-    // Aggregiertes Resultat
+    // CRCON-Level Error Handling (failed property)
+    if (gamestateData.failed) throw new Error(`Gamestate API Error: ${gamestateData.error}`);
+    if (statsData.failed) throw new Error(`Stats API Error: ${statsData.error}`);
+    if (teamviewData.failed) throw new Error(`TeamView API Error: ${teamviewData.error}`);
+
+    // Aggregiertes Resultat: Zugriff direkt auf .result
     const aggregatedData = {
-      gamestate: gamestateData.result || gamestateData,
-      stats: statsData.result?.stats || statsData.stats || [],
-      team_view: teamviewData.result || teamviewData
+      gamestate: gamestateData.result,
+      stats: statsData.result?.stats || [],
+      team_view: teamviewData.result,
+      meta: {
+        timestamp: new Date().toISOString(),
+        version: gamestateData.version
+      }
     };
 
     // Cache-Control: Kurzzeitiges Caching (10s)
