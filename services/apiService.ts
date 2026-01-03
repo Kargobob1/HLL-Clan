@@ -1,10 +1,12 @@
 
 /**
  * CRCON API SERVICE - TTV CLAN
- * Handles connection to the HLL server proxy.
+ * Handles connection to the HLL server proxy with advanced scoreboard support.
  */
 
 const PROXY_ENDPOINT = '/api/game-stats';
+
+// --- Interfaces for HLL Structures ---
 
 export interface GameState {
   allied_score: number;
@@ -16,12 +18,12 @@ export interface GameState {
   } | string;
   num_allied_players: number;
   num_axis_players: number;
+  next_map?: string;
 }
 
-export interface PlayerStat {
+export interface PlayerCombatStats {
   player: string;
-  player_id: string;
-  team: 'allied' | 'axis' | 'none';
+  player_id: string; // steam64 usually
   kills: number;
   deaths: number;
   combat: number;
@@ -35,52 +37,75 @@ export interface PlayerStat {
   time_seconds: number;
   weapons: Record<string, number>;
   death_by: Record<string, number>;
-  death_by_weapons: Record<string, number>;
   most_killed: Record<string, number>;
-  steaminfo?: {
-    profile?: string | null;
-    country?: string | null;
-    has_bans: boolean;
+}
+
+// Player Info inside a Squad (from get_team_view)
+export interface SquadMember {
+  player_id: string;
+  name: string;
+  role: string; // e.g., "officer", "rifleman", "medic"
+  steam_profile_url?: string;
+  is_vip?: boolean;
+  unit_id?: number;
+  loadout?: string;
+  level?: number;
+}
+
+// Squad Structure
+export interface Squad {
+  type: 'infantry' | 'armor' | 'recon';
+  squad_name: string;
+  has_leader: boolean;
+  members: SquadMember[];
+}
+
+// Commander Structure
+export interface Commander {
+  player_id: string;
+  name: string;
+  role: 'armycommander';
+  level?: number;
+}
+
+// Team Structure (Allies/Axis)
+export interface TeamData {
+  commander: Commander | null;
+  squads: Record<string, Squad>; // Key is squad index or name
+  unassigned: SquadMember[];
+}
+
+// The Combined Response from our Proxy
+export interface FullScoreboardData {
+  gamestate: GameState;
+  stats: PlayerCombatStats[]; // Flat list for lookup
+  team_view: {
+    allies: TeamData;
+    axis: TeamData;
   };
 }
 
-export interface LiveStatsResponse {
-  stats: PlayerStat[];
-  gamestate: GameState;
-}
-
 class CRCON_API_Service {
-  async getLiveStats(): Promise<LiveStatsResponse | null> {
+  async getLiveStats(): Promise<FullScoreboardData | null> {
     try {
       const response = await fetch(PROXY_ENDPOINT, {
         method: 'GET',
         headers: { 
           'Accept': 'application/json',
-          'Cache-Control': 'no-cache'
         }
       });
 
       if (!response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || `Server-Fehler: ${response.status}`);
-        } else {
-          if (response.status === 404) {
-             throw new Error(`Der API-Proxy unter '${PROXY_ENDPOINT}' konnte nicht erreicht werden.`);
-          }
-          throw new Error(`Netzwerkfehler: ${response.status}`);
-        }
+        throw new Error(`Server-Status: ${response.status}`);
       }
 
       const data = await response.json();
-      const payload = data.result || data;
 
-      if (payload.failed) {
-        throw new Error(payload.error || "Remote-API Fehler");
+      if (data.failed) {
+        throw new Error(data.error || "Remote-API Fehler");
       }
 
-      return payload as LiveStatsResponse;
+      return data as FullScoreboardData;
     } catch (err: any) {
       console.error("Dashboard Service Error:", err);
       throw err;
