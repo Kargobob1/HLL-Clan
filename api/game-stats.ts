@@ -26,7 +26,7 @@ export default async function handler(
   // Konfiguration
   const BASE_URL = 'http://85.215.162.180:8010/api';
   // Korrekter UUID-basierter API Key
-  const API_KEY = process.env.CRCON_API_KEY || 'ebaf10ce-fa17-4971-8bd5-f22a72fd791c';
+  const API_KEY = process.env.CRCON_API_KEY || '***REMOVED***';
 
   const headers = {
     'Accept': 'application/json',
