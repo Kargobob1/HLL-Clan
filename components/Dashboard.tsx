@@ -77,6 +77,9 @@ const Dashboard: React.FC = () => {
   const [sortConfig, setSortConfig] = useState<{ key: keyof PlayerCombatStats | 'name'; dir: 'asc' | 'desc' }>({ key: 'kills', dir: 'desc' });
   const [expandedPlayer, setExpandedPlayer] = useState<string | null>(null);
 
+  // Timer for Progress Bar
+  const [secondsUntilUpdate, setSecondsUntilUpdate] = useState(15);
+
   const loadData = useCallback(async (isBackground = false) => {
     if (isBackground) setIsRefreshing(true);
     try {
@@ -90,13 +93,35 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
       setIsRefreshing(false);
+      setSecondsUntilUpdate(15); // Reset timer
     }
   }, []);
 
+  // Update Countdown Timer
   useEffect(() => {
-    loadData(false);
-    const interval = setInterval(() => loadData(true), 15000);
-    return () => clearInterval(interval);
+    const timer = setInterval(() => {
+      setSecondsUntilUpdate(prev => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Robust Polling using setTimeout (better than setInterval for async)
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    const runUpdateLoop = async () => {
+      await loadData(true);
+      // Schedule next update after 15 seconds
+      timeoutId = setTimeout(runUpdateLoop, 15000);
+    };
+
+    // Initial load
+    loadData(false).then(() => {
+      // Start loop after initial load
+      timeoutId = setTimeout(runUpdateLoop, 15000);
+    });
+
+    return () => clearTimeout(timeoutId);
   }, [loadData]);
 
   // --- Aggregation & Processing ---
@@ -184,9 +209,19 @@ const Dashboard: React.FC = () => {
           
           {/* Match Info */}
           <div className="lg:col-span-2 glass-card border-t-4 border-t-[var(--accent)] p-4 md:p-6 relative overflow-hidden group">
+            {/* Progress Bar for Update */}
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-white/5">
+               <div 
+                 className="h-full bg-[var(--accent)] transition-all duration-1000 ease-linear"
+                 style={{ width: `${((15 - secondsUntilUpdate) / 15) * 100}%` }}
+               ></div>
+            </div>
+
             <div className="absolute top-0 right-0 p-4 opacity-50 flex gap-2 items-center">
                <span className={`w-2 h-2 rounded-full ${isRefreshing ? 'bg-green-400 animate-ping' : 'bg-green-600'}`}></span>
-               <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-mono border border-white/10 px-2 py-1">Live Feed</span>
+               <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-mono border border-white/10 px-2 py-1">
+                 Live Feed {isRefreshing ? '(REFRESH)' : `(${secondsUntilUpdate}s)`}
+               </span>
             </div>
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 h-full">
               <div className="text-center md:text-left z-10">
