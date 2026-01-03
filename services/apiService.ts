@@ -89,10 +89,15 @@ export interface FullScoreboardData {
 class CRCON_API_Service {
   async getLiveStats(): Promise<FullScoreboardData | null> {
     try {
-      const response = await fetch(PROXY_ENDPOINT, {
+      // CACHE BUSTING: Add timestamp to URL to prevent browser caching
+      const url = `${PROXY_ENDPOINT}?t=${new Date().getTime()}`;
+      
+      const response = await fetch(url, {
         method: 'GET',
         headers: { 
           'Accept': 'application/json',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
       });
 

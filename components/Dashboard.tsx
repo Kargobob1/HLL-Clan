@@ -67,6 +67,7 @@ const resolveTeam = (playerId: string, teamView: FullScoreboardData['team_view']
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<FullScoreboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<'squads' | 'table'>('squads');
   
@@ -76,7 +77,8 @@ const Dashboard: React.FC = () => {
   const [sortConfig, setSortConfig] = useState<{ key: keyof PlayerCombatStats | 'name'; dir: 'asc' | 'desc' }>({ key: 'kills', dir: 'desc' });
   const [expandedPlayer, setExpandedPlayer] = useState<string | null>(null);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (isBackground = false) => {
+    if (isBackground) setIsRefreshing(true);
     try {
       const result = await api.getLiveStats();
       if (result) {
@@ -87,12 +89,13 @@ const Dashboard: React.FC = () => {
       console.error("Dashboard Update Failed", err);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   }, []);
 
   useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 15000);
+    loadData(false);
+    const interval = setInterval(() => loadData(true), 15000);
     return () => clearInterval(interval);
   }, [loadData]);
 
@@ -173,38 +176,39 @@ const Dashboard: React.FC = () => {
   const mapName = typeof gs?.current_map === 'object' ? gs.current_map.pretty_name : gs?.current_map || "Unknown Map";
 
   return (
-    <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text-main)] pt-24 pb-20 px-4 font-inter">
+    <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text-main)] pt-24 pb-20 px-2 md:px-4 font-inter">
       <div className="max-w-[1800px] mx-auto space-y-8">
         
         {/* --- Header Section --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           
           {/* Match Info */}
-          <div className="lg:col-span-2 glass-card border-t-4 border-t-[var(--accent)] p-6 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-50">
-               <span className="text-[10px] uppercase tracking-[0.3em] font-mono border border-white/10 px-2 py-1">Live Feed</span>
+          <div className="lg:col-span-2 glass-card border-t-4 border-t-[var(--accent)] p-4 md:p-6 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-50 flex gap-2 items-center">
+               <span className={`w-2 h-2 rounded-full ${isRefreshing ? 'bg-green-400 animate-ping' : 'bg-green-600'}`}></span>
+               <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-mono border border-white/10 px-2 py-1">Live Feed</span>
             </div>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 h-full">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 h-full">
               <div className="text-center md:text-left z-10">
-                <span className="block text-[var(--accent)] text-xs font-black tracking-[0.4em] uppercase mb-2">Einsatzgebiet</span>
-                <h1 className="text-4xl md:text-5xl font-oswald font-bold text-white uppercase italic tracking-tight">{mapName}</h1>
-                <div className="mt-4 flex items-center gap-4 text-sm font-mono text-zinc-400">
+                <span className="block text-[var(--accent)] text-[10px] md:text-xs font-black tracking-[0.4em] uppercase mb-2">Einsatzgebiet</span>
+                <h1 className="text-3xl md:text-5xl font-oswald font-bold text-white uppercase italic tracking-tight break-words">{mapName}</h1>
+                <div className="mt-4 flex flex-wrap justify-center md:justify-start items-center gap-4 text-xs md:text-sm font-mono text-zinc-400">
                    <span className="flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> {gs?.time_remaining || "00:00"}</span>
-                   <span className="opacity-30">|</span>
-                   <span>{processedStats.players.length} Spieler Aktiv</span>
+                   <span className="hidden md:inline opacity-30">|</span>
+                   <span className="block w-full md:w-auto text-center md:text-left">{processedStats.players.length} Spieler Aktiv</span>
                 </div>
               </div>
 
               {/* Score Big Display */}
               <div className="flex items-center gap-8 md:gap-16 z-10">
                  <div className="text-center">
-                    <span className="block text-5xl md:text-7xl font-oswald font-bold text-blue-500">{gs?.allied_score || 0}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-blue-300">Allies</span>
+                    <span className="block text-4xl md:text-7xl font-oswald font-bold text-blue-500">{gs?.allied_score || 0}</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-blue-300">Allies</span>
                  </div>
-                 <div className="h-16 w-px bg-white/10 skew-x-12"></div>
+                 <div className="h-10 md:h-16 w-px bg-white/10 skew-x-12"></div>
                  <div className="text-center">
-                    <span className="block text-5xl md:text-7xl font-oswald font-bold text-red-500">{gs?.axis_score || 0}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-red-300">Axis</span>
+                    <span className="block text-4xl md:text-7xl font-oswald font-bold text-red-500">{gs?.axis_score || 0}</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-red-300">Axis</span>
                  </div>
               </div>
             </div>
@@ -213,7 +217,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Team Comparison Stats */}
-          <div className="glass-card p-6 flex flex-col justify-center space-y-6">
+          <div className="glass-card p-4 md:p-6 flex flex-col justify-center space-y-6">
              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 mb-2">Truppen-Vergleich</h3>
              <StatBar label="Kills" allied={processedStats.teamStats.allies.kills} axis={processedStats.teamStats.axis.kills} />
              <StatBar label="Combat Score" allied={processedStats.teamStats.allies.combat} axis={processedStats.teamStats.axis.combat} />
@@ -226,42 +230,42 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* --- View Controls --- */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-white/10 pb-4 sticky top-20 bg-[var(--bg-deep)]/95 backdrop-blur z-40">
-          <div className="flex gap-2 bg-black/30 p-1 rounded-sm border border-white/5">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-white/10 pb-4 sticky top-20 bg-[var(--bg-deep)]/95 backdrop-blur z-40 pt-2">
+          <div className="flex gap-2 w-full sm:w-auto bg-black/30 p-1 rounded-sm border border-white/5">
             <button 
               onClick={() => setViewMode('squads')}
-              className={`px-6 py-2 text-xs font-oswald uppercase tracking-widest transition-all ${viewMode === 'squads' ? 'bg-[var(--primary)] text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`flex-1 sm:flex-none px-4 md:px-6 py-2 text-[10px] md:text-xs font-oswald uppercase tracking-widest transition-all ${viewMode === 'squads' ? 'bg-[var(--primary)] text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
             >
-              Taktische Ansicht
+              Taktik
             </button>
             <button 
               onClick={() => setViewMode('table')}
-              className={`px-6 py-2 text-xs font-oswald uppercase tracking-widest transition-all ${viewMode === 'table' ? 'bg-[var(--accent)] text-[var(--bg-deep)] font-bold shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`flex-1 sm:flex-none px-4 md:px-6 py-2 text-[10px] md:text-xs font-oswald uppercase tracking-widest transition-all ${viewMode === 'table' ? 'bg-[var(--accent)] text-[var(--bg-deep)] font-bold shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
             >
-              Intel Datenbank
+              Datenbank
             </button>
           </div>
 
           {viewMode === 'table' && (
-            <div className="flex gap-4 items-center overflow-x-auto max-w-full">
+            <div className="flex gap-2 md:gap-4 items-center overflow-x-auto w-full sm:w-auto max-w-full pb-1">
               <select 
                 value={filterTeam} 
                 onChange={(e) => setFilterTeam(e.target.value as any)}
-                className="bg-black/40 border border-white/10 text-xs text-zinc-300 px-3 py-2 outline-none focus:border-[var(--accent)]"
+                className="bg-black/40 border border-white/10 text-[10px] md:text-xs text-zinc-300 px-2 md:px-3 py-2 outline-none focus:border-[var(--accent)]"
               >
-                <option value="all">Alle Fraktionen</option>
-                <option value="allies">Allied Forces</option>
-                <option value="axis">Axis Forces</option>
+                <option value="all">Alle</option>
+                <option value="allies">Allies</option>
+                <option value="axis">Axis</option>
               </select>
               <select 
                 value={minPlaytime}
                 onChange={(e) => setMinPlaytime(Number(e.target.value))}
-                className="bg-black/40 border border-white/10 text-xs text-zinc-300 px-3 py-2 outline-none focus:border-[var(--accent)]"
+                className="bg-black/40 border border-white/10 text-[10px] md:text-xs text-zinc-300 px-2 md:px-3 py-2 outline-none focus:border-[var(--accent)]"
               >
-                <option value="0">Alle Spielzeiten</option>
-                <option value="15">&gt; 15 Minuten</option>
-                <option value="30">&gt; 30 Minuten</option>
-                <option value="60">&gt; 1 Stunde</option>
+                <option value="0">Alle Zeiten</option>
+                <option value="15">&gt; 15m</option>
+                <option value="30">&gt; 30m</option>
+                <option value="60">&gt; 1h</option>
               </select>
             </div>
           )}
@@ -290,8 +294,8 @@ const Dashboard: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto glass-card border border-white/5">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto glass-card border border-white/5 max-w-[100vw]">
+            <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-black/40 text-[9px] uppercase tracking-[0.2em] text-zinc-500 border-b border-white/10">
                   <SortHeader label="Soldat" sortKey="name" currentSort={sortConfig} onSort={setSortConfig} className="pl-6 py-4" />
@@ -345,9 +349,10 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        <div className="text-center pt-12 border-t border-white/5">
+        <div className="text-center pt-12 border-t border-white/5 flex items-center justify-center gap-2">
+           {isRefreshing && <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-ping"></div>}
            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
-             Datenaktualisierung: {lastUpdated.toLocaleTimeString()} // Synchronisiert mit HLL RCON
+             Datenaktualisierung: {lastUpdated.toLocaleTimeString()} // Synchronisiert mit HLL RCON {isRefreshing ? '(wird aktualisiert...)' : ''}
            </p>
         </div>
       </div>
