@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ImpressumModal from './ImpressumModal.tsx';
 import PrivacyModal from './PrivacyModal.tsx';
@@ -19,7 +20,7 @@ const Footer: React.FC = () => {
                 />
                 <div className="flex flex-col">
                     <span className="font-oswald text-3xl font-bold tracking-tighter text-white">TTV</span>
-                    <span className="text-[10px] uppercase tracking-[0.4em] text-[var(--primary)] font-black">Est. 2024</span>
+                    <span className="text-[10px] uppercase tracking-[0.4em] text-[var(--primary)] font-black">Est. 2025</span>
                 </div>
             </div>
             <p className="text-zinc-500 text-sm max-w-xs leading-relaxed italic">
@@ -62,7 +63,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="text-center pt-10 border-t border-[var(--border)] text-zinc-600 text-[9px] uppercase tracking-[0.4em] font-bold">
-          &copy; {new Date().getFullYear()} Taktisches Totalversagen. Inoffizielle Fan-Seite. Alle Rechte bei den jeweiligen Eigentümern.
+          &copy; {new Date().getFullYear()} Taktisches Totalversagen. Offizielle Seite. Alle Rechte vorbehalten.
         </div>
       </div>
 
