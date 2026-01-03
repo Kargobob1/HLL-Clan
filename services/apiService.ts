@@ -58,7 +58,7 @@ export interface Squad {
   type: 'infantry' | 'armor' | 'recon';
   squad_name: string;
   has_leader: boolean;
-  members: SquadMember[];
+  players: SquadMember[]; // Corrected from 'members' to 'players' based on API response
 }
 
 // Commander Structure
@@ -84,20 +84,28 @@ export interface FullScoreboardData {
     allies: TeamData;
     axis: TeamData;
   };
+  meta?: {
+      timestamp: string;
+      unix: number;
+  }
 }
 
 class CRCON_API_Service {
   async getLiveStats(): Promise<FullScoreboardData | null> {
     try {
       // CACHE BUSTING: Add timestamp to URL to prevent browser caching
-      const url = `${PROXY_ENDPOINT}?t=${new Date().getTime()}`;
+      const timestamp = new Date().getTime();
+      const url = `${PROXY_ENDPOINT}?t=${timestamp}`;
       
+      console.log(`[ApiService] Requesting fresh data: ${url}`);
+
       const response = await fetch(url, {
         method: 'GET',
         headers: { 
           'Accept': 'application/json',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
 
@@ -110,7 +118,8 @@ class CRCON_API_Service {
       if (data.failed) {
         throw new Error(data.error || "Remote-API Fehler");
       }
-
+      
+      console.log(`[ApiService] Data received. Meta timestamp: ${data.meta?.timestamp}`);
       return data as FullScoreboardData;
     } catch (err: any) {
       console.error("Dashboard Service Error:", err);
