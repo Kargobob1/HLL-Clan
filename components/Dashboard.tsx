@@ -33,19 +33,31 @@ const formatTime = (seconds: number) => {
 // --- Helper Functions ---
 
 const resolveTeam = (playerId: string, teamView: FullScoreboardData['team_view']): 'allies' | 'axis' | 'unknown' => {
+  if (!teamView || !teamView.allies || !teamView.axis) return 'unknown';
+
   // Check Allies
   if (teamView.allies.commander?.player_id === playerId) return 'allies';
-  for (const squad of Object.values(teamView.allies.squads || {})) {
-    if (squad.members.some(m => m.player_id === playerId)) return 'allies';
+  
+  const alliesSquads = teamView.allies.squads || {};
+  for (const squad of Object.values(alliesSquads)) {
+    if (squad?.members?.some(m => m.player_id === playerId)) return 'allies';
   }
-  if (teamView.allies.unassigned.some(m => m.player_id === playerId)) return 'allies';
+  
+  // Safe Access: Ensure array exists before calling .some()
+  const alliesUnassigned = teamView.allies.unassigned || [];
+  if (alliesUnassigned.some(m => m.player_id === playerId)) return 'allies';
 
   // Check Axis
   if (teamView.axis.commander?.player_id === playerId) return 'axis';
-  for (const squad of Object.values(teamView.axis.squads || {})) {
-    if (squad.members.some(m => m.player_id === playerId)) return 'axis';
+  
+  const axisSquads = teamView.axis.squads || {};
+  for (const squad of Object.values(axisSquads)) {
+    if (squad?.members?.some(m => m.player_id === playerId)) return 'axis';
   }
-  if (teamView.axis.unassigned.some(m => m.player_id === playerId)) return 'axis';
+
+  // Safe Access: Ensure array exists before calling .some()
+  const axisUnassigned = teamView.axis.unassigned || [];
+  if (axisUnassigned.some(m => m.player_id === playerId)) return 'axis';
 
   return 'unknown';
 };
@@ -90,7 +102,8 @@ const Dashboard: React.FC = () => {
     const emptyTeamStats = { kills: 0, deaths: 0, combat: 0, support: 0, count: 0 };
     const emptyHighlights = { maxKills: 0, maxSupport: 0, maxLife: 0 };
 
-    if (!data) return { 
+    // Strict check for required data structure
+    if (!data || !data.stats || !data.team_view) return { 
       players: [], 
       highlights: emptyHighlights, 
       teamStats: { allies: { ...emptyTeamStats }, axis: { ...emptyTeamStats } } 
@@ -157,7 +170,7 @@ const Dashboard: React.FC = () => {
   if (loading && !data) return <LoadingScreen />;
 
   const gs = data?.gamestate;
-  const mapName = typeof gs?.current_map === 'object' ? gs.current_map.pretty_name : gs?.current_map;
+  const mapName = typeof gs?.current_map === 'object' ? gs.current_map.pretty_name : gs?.current_map || "Unknown Map";
 
   return (
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text-main)] pt-24 pb-20 px-4 font-inter">
@@ -176,7 +189,7 @@ const Dashboard: React.FC = () => {
                 <span className="block text-[var(--accent)] text-xs font-black tracking-[0.4em] uppercase mb-2">Einsatzgebiet</span>
                 <h1 className="text-4xl md:text-5xl font-oswald font-bold text-white uppercase italic tracking-tight">{mapName}</h1>
                 <div className="mt-4 flex items-center gap-4 text-sm font-mono text-zinc-400">
-                   <span className="flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> {gs?.time_remaining}</span>
+                   <span className="flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> {gs?.time_remaining || "00:00"}</span>
                    <span className="opacity-30">|</span>
                    <span>{processedStats.players.length} Spieler Aktiv</span>
                 </div>
@@ -185,12 +198,12 @@ const Dashboard: React.FC = () => {
               {/* Score Big Display */}
               <div className="flex items-center gap-8 md:gap-16 z-10">
                  <div className="text-center">
-                    <span className="block text-5xl md:text-7xl font-oswald font-bold text-blue-500">{gs?.allied_score}</span>
+                    <span className="block text-5xl md:text-7xl font-oswald font-bold text-blue-500">{gs?.allied_score || 0}</span>
                     <span className="text-[10px] uppercase tracking-widest text-blue-300">Allies</span>
                  </div>
                  <div className="h-16 w-px bg-white/10 skew-x-12"></div>
                  <div className="text-center">
-                    <span className="block text-5xl md:text-7xl font-oswald font-bold text-red-500">{gs?.axis_score}</span>
+                    <span className="block text-5xl md:text-7xl font-oswald font-bold text-red-500">{gs?.axis_score || 0}</span>
                     <span className="text-[10px] uppercase tracking-widest text-red-300">Axis</span>
                  </div>
               </div>
@@ -257,20 +270,24 @@ const Dashboard: React.FC = () => {
         {/* --- Main Content --- */}
         {viewMode === 'squads' ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <TeamColumn 
-              teamData={data!.team_view.allies} 
-              allStats={data!.stats} 
-              teamName="Allied Forces" 
-              theme="blue" 
-              highlights={processedStats.highlights}
-            />
-            <TeamColumn 
-              teamData={data!.team_view.axis} 
-              allStats={data!.stats} 
-              teamName="Axis Forces" 
-              theme="red" 
-              highlights={processedStats.highlights}
-            />
+            {data?.team_view?.allies && (
+              <TeamColumn 
+                teamData={data.team_view.allies} 
+                allStats={data.stats || []} 
+                teamName="Allied Forces" 
+                theme="blue" 
+                highlights={processedStats.highlights}
+              />
+            )}
+            {data?.team_view?.axis && (
+              <TeamColumn 
+                teamData={data.team_view.axis} 
+                allStats={data.stats || []} 
+                teamName="Axis Forces" 
+                theme="red" 
+                highlights={processedStats.highlights}
+              />
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto glass-card border border-white/5">
@@ -376,12 +393,17 @@ const LoadingScreen = () => (
 // --- Squad View Components ---
 
 const TeamColumn = ({ teamData, allStats, teamName, theme, highlights }: any) => {
+  // Defensive check for teamData
+  if (!teamData) return null;
+
   const isBlue = theme === 'blue';
   const borderColor = isBlue ? 'border-blue-500/30' : 'border-red-500/30';
   const headerBg = isBlue ? 'bg-blue-900/20' : 'bg-red-900/20';
   const textColor = isBlue ? 'text-blue-400' : 'text-red-400';
 
-  const findStats = (id: string) => allStats.find((s: any) => s.player_id === id);
+  const findStats = (id: string) => allStats?.find((s: any) => s.player_id === id);
+  const unassigned = teamData.unassigned || [];
+  const squads = teamData.squads || {};
 
   return (
     <div className="flex flex-col space-y-4">
@@ -409,10 +431,11 @@ const TeamColumn = ({ teamData, allStats, teamName, theme, highlights }: any) =>
 
       {/* Squads */}
       <div className="space-y-4">
-        {Object.values(teamData.squads || {}).map((squad: any, idx: number) => {
-          // Squad Aggregation
-          const squadKills = squad.members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.kills || 0), 0);
-          const squadCombat = squad.members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.combat || 0), 0);
+        {Object.values(squads).map((squad: any, idx: number) => {
+          // Squad Aggregation Safe Check
+          const members = squad.members || [];
+          const squadKills = members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.kills || 0), 0);
+          const squadCombat = members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.combat || 0), 0);
           
           return (
             <div key={idx} className={`border border-white/5 bg-black/20 hover:border-white/10 transition-colors`}>
@@ -429,7 +452,7 @@ const TeamColumn = ({ teamData, allStats, teamName, theme, highlights }: any) =>
               </div>
               {/* Members */}
               <div className="divide-y divide-white/5">
-                {squad.members.map((member: any) => (
+                {members.map((member: any) => (
                   <div key={member.player_id} className="px-3 py-1.5">
                     <PlayerRow 
                       player={member} 
@@ -447,11 +470,11 @@ const TeamColumn = ({ teamData, allStats, teamName, theme, highlights }: any) =>
       </div>
       
       {/* Unassigned */}
-      {teamData.unassigned.length > 0 && (
+      {unassigned.length > 0 && (
          <div className="opacity-50 border border-white/5 p-4">
             <h4 className="text-[10px] uppercase tracking-widest mb-2 font-bold">Ohne Zuordnung</h4>
             <div className="space-y-2">
-              {teamData.unassigned.map((m: any) => (
+              {unassigned.map((m: any) => (
                 <div key={m.player_id} className="text-xs text-zinc-500">{m.name}</div>
               ))}
             </div>
