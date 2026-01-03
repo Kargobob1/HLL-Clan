@@ -246,9 +246,9 @@ const Dashboard: React.FC = () => {
                 className="bg-black/40 border border-white/10 text-xs text-zinc-300 px-3 py-2 outline-none focus:border-[var(--accent)]"
               >
                 <option value="0">Alle Spielzeiten</option>
-                <option value="15">> 15 Minuten</option>
-                <option value="30">> 30 Minuten</option>
-                <option value="60">> 1 Stunde</option>
+                <option value="15">&gt; 15 Minuten</option>
+                <option value="30">&gt; 30 Minuten</option>
+                <option value="60">&gt; 1 Stunde</option>
               </select>
             </div>
           )}
