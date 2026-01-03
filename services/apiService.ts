@@ -35,6 +35,7 @@ export interface PlayerCombatStats {
   kill_death_ratio: number;
   kills_per_minute: number;
   time_seconds: number;
+  longest_life_secs?: number; // Added for highlights
   weapons: Record<string, number>;
   death_by: Record<string, number>;
   most_killed: Record<string, number>;
