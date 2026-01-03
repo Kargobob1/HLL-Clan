@@ -28,11 +28,16 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
     setMobileMenuOpen(false);
   };
 
+  // Mobile navbar should always have a background to be visible against any content
+  const mobileBgClass = 'bg-[var(--bg-deep)]/95 backdrop-blur-lg border-b border-[var(--border)] shadow-2xl py-3';
+  // Desktop logic remains dynamic
+  const desktopBgClass = scrolled || currentPage !== 'home' ? mobileBgClass : 'bg-transparent py-6 md:py-8';
+
   return (
-    <nav className={`fixed w-full z-[100] transition-all duration-500 ${scrolled || currentPage !== 'home' || mobileMenuOpen ? 'bg-[var(--bg-deep)]/95 backdrop-blur-lg py-3 border-b border-[var(--border)] shadow-2xl' : 'bg-transparent py-6 md:py-8'}`}>
+    <nav className={`fixed w-full z-[200] transition-all duration-500 ${mobileMenuOpen ? mobileBgClass : ''} lg:${scrolled || currentPage !== 'home' ? 'bg-[var(--bg-deep)]/95 backdrop-blur-lg py-3 border-b border-[var(--border)] shadow-2xl' : 'bg-transparent py-6 md:py-8'} max-lg:${mobileBgClass}`}>
       <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         {/* LOGO */}
-        <button onClick={() => handleNavClick('home')} className="flex items-center space-x-3 md:space-x-4 group cursor-pointer outline-none z-[110]">
+        <button onClick={() => handleNavClick('home')} className="flex items-center space-x-3 md:space-x-4 group cursor-pointer outline-none z-[210]">
           <img 
             src="https://i.imgur.com/OqJyLQG.png" 
             alt="TTV Logo" 
@@ -87,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
         </div>
 
         {/* MOBILE BURGER */}
-        <div className="flex lg:hidden items-center gap-4 z-[110]">
+        <div className="flex lg:hidden items-center gap-4 z-[210]">
              <button 
               onClick={toggleTheme}
               className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
@@ -110,7 +115,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
 
       {/* MOBILE MENU OVERLAY */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-[var(--bg-deep)] pt-24 px-6 pb-6 flex flex-col items-center justify-start space-y-8 animate-in slide-in-from-top-10 duration-300">
+        <div className="fixed inset-0 z-[200] bg-[var(--bg-deep)] pt-24 px-6 pb-6 flex flex-col items-center justify-start space-y-8 animate-in slide-in-from-top-10 duration-300">
            <div className="w-full h-px bg-[var(--primary)]/30 w-1/2 mx-auto"></div>
            
            <button 

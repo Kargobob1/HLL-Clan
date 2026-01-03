@@ -6,6 +6,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
  * Aggregiert Daten von gamestate, live_stats und team_view.
  * Fix: Verwendet korrekte HTTP-Methoden und API-Key.
  * Update: Verbessertes Parsing der CRCON result-Wrapper und Error-Handling.
+ * Update: Aggressives Cache-Busting für Upstream-Requests.
  */
 export default async function handler(
   request: VercelRequest,
@@ -36,19 +37,25 @@ export default async function handler(
   };
 
   try {
-    // Parallel Fetching
+    // CACHE BUSTING: Timestamp generieren
+    const t = Date.now();
+
+    // Parallel Fetching mit Cache-Busting Parametern
     const [gamestateRes, statsRes, teamviewRes] = await Promise.all([
-      fetch(`${BASE_URL}/get_gamestate`, { 
+      fetch(`${BASE_URL}/get_gamestate?_=${t}`, { 
         method: 'GET', 
-        headers
+        headers,
+        cache: 'no-store'
       }),
-      fetch(`${BASE_URL}/get_live_game_stats`, { 
+      fetch(`${BASE_URL}/get_live_game_stats?_=${t}`, { 
         method: 'GET', 
-        headers 
+        headers,
+        cache: 'no-store' 
       }),
-      fetch(`${BASE_URL}/get_team_view`, { 
+      fetch(`${BASE_URL}/get_team_view?_=${t}`, { 
         method: 'GET', 
-        headers 
+        headers,
+        cache: 'no-store' 
       })
     ]);
 
