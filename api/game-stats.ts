@@ -37,12 +37,10 @@ export default async function handler(
 
   try {
     // Parallel Fetching
-    // WICHTIG: get_gamestate benötigt oft POST, während andere Endpoints GET verwenden
     const [gamestateRes, statsRes, teamviewRes] = await Promise.all([
       fetch(`${BASE_URL}/get_gamestate`, { 
-        method: 'POST', 
-        headers,
-        body: JSON.stringify({}) 
+        method: 'GET', 
+        headers
       }),
       fetch(`${BASE_URL}/get_live_game_stats`, { 
         method: 'GET', 
