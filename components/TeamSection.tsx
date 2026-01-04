@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const teamMembers = [
@@ -52,20 +53,6 @@ const TeamSection: React.FC = () => {
               {/* Main Card Content */}
               <div className="relative glass-card p-8 border border-white/5 transition-all duration-300 group-hover:border-[var(--accent)]/50 flex flex-col h-full">
                 
-                {/* Dossier Image Container */}
-                <div className="w-full aspect-square bg-black/40 mb-8 flex items-center justify-center border border-[var(--primary)]/30 overflow-hidden relative shrink-0">
-                   {/* Scanline Effect Inside Avatar */}
-                   <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] z-10 bg-[length:100%_2px,3px_100%] pointer-events-none opacity-50"></div>
-                   
-                   <span className="text-7xl font-oswald font-black text-[var(--primary)] group-hover:text-[var(--accent)] transition-colors duration-700 opacity-30 select-none">
-                     {member.avatar}
-                   </span>
-                   
-                   <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/60 text-[8px] font-mono text-zinc-500 uppercase tracking-tighter border border-white/5">
-                     FILE: {2024 + idx}-FOUNDER
-                   </div>
-                </div>
-
                 {/* Info Block */}
                 <div className="flex flex-col flex-grow">
                   <div className="mb-6">
