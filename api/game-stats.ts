@@ -25,7 +25,7 @@ export default async function handler(
 
   // Konfiguration
   const BASE_URL = 'http://85.215.162.180:8010/api';
-  const API_KEY = process.env.CRCON_API_KEY || '***REMOVED***';
+  const API_KEY = process.env.CRCON_API_KEY;
 
   // Aggressive Anti-Cache Headers für den Upstream-Request
   const headers = {
