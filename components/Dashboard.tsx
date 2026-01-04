@@ -21,7 +21,16 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
   'rifleman': <span title="Rifleman">⚔️</span>
 };
 
+const FACTION_NAMES: Record<string, string> = {
+  'us': 'US Army',
+  'ger': 'Wehrmacht',
+  'rus': 'Rote Armee',
+  'gb': 'British Forces',
+  'cw': 'Commonwealth'
+};
+
 const getRoleIcon = (role: string) => ROLE_ICONS[role] || <span title={role}>•</span>;
+const getFactionName = (code?: string) => code ? (FACTION_NAMES[code] || code.toUpperCase()) : 'Unknown Force';
 
 const formatTime = (seconds: number) => {
   if (!seconds) return "0m";
@@ -86,7 +95,7 @@ const Dashboard: React.FC = () => {
   // Robust Polling Effect with Empty Dependency Array
   useEffect(() => {
     let isMounted = true;
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     const runUpdateLoop = async () => {
       console.log(`[EffectLoop] Starting cycle at ${new Date().toISOString()}`);
@@ -131,7 +140,6 @@ const Dashboard: React.FC = () => {
     };
 
     // 1. Build a fast lookup map for Player ID -> Team
-    // This replaces the repeated 'resolveTeam' logic and fixes the property access issues.
     const playerTeamMap = new Map<string, 'allies' | 'axis'>();
 
     const mapTeamData = (teamName: 'allies' | 'axis') => {
@@ -144,8 +152,6 @@ const Dashboard: React.FC = () => {
       }
 
       // Map Squad Players
-      // squads is a Dictionary (Object), so we iterate values.
-      // API uses 'players' property, not 'members'.
       if (teamData.squads) {
         Object.values(teamData.squads).forEach((squad: any) => {
           if (squad && Array.isArray(squad.players)) {
@@ -157,7 +163,6 @@ const Dashboard: React.FC = () => {
       }
 
       // Map Unassigned
-      // Handling varied structure: sometimes it's an array, sometimes nested under squads.unassigned.players
       if (teamData.unassigned && Array.isArray(teamData.unassigned)) {
          teamData.unassigned.forEach((p: any) => playerTeamMap.set(p.player_id, teamName));
       } 
@@ -228,7 +233,9 @@ const Dashboard: React.FC = () => {
   if (loading && !data) return <LoadingScreen />;
 
   const gs = data?.gamestate;
-  const mapName = typeof gs?.current_map === 'object' ? gs.current_map.pretty_name : gs?.current_map || "Unknown Map";
+  const mapName = gs?.current_map?.pretty_name || "Unknown Map";
+  const alliesName = getFactionName(gs?.current_map?.map?.allies?.name);
+  const axisName = getFactionName(gs?.current_map?.map?.axis?.name);
 
   return (
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text-main)] pt-24 pb-20 px-2 md:px-4 font-inter">
@@ -264,9 +271,14 @@ const Dashboard: React.FC = () => {
                 <span className="block text-[var(--accent)] text-[10px] md:text-xs font-black tracking-[0.4em] uppercase mb-2">Einsatzgebiet</span>
                 <h1 className="text-3xl md:text-5xl font-oswald font-bold text-white uppercase italic tracking-tight break-words">{mapName}</h1>
                 <div className="mt-4 flex flex-wrap justify-center md:justify-start items-center gap-4 text-xs md:text-sm font-mono text-zinc-400">
-                   <span className="flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> {gs?.time_remaining || "00:00"}</span>
+                   <span className="flex items-center gap-2">
+                     <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> 
+                     {gs?.raw_time_remaining || "0:00:00"}
+                   </span>
                    <span className="hidden md:inline opacity-30">|</span>
-                   <span className="block w-full md:w-auto text-center md:text-left">{processedStats.players.length} Spieler Aktiv</span>
+                   <span className="block w-full md:w-auto text-center md:text-left">
+                     {gs?.num_allied_players ?? 0} vs {gs?.num_axis_players ?? 0} Players
+                   </span>
                 </div>
               </div>
 
@@ -274,12 +286,12 @@ const Dashboard: React.FC = () => {
               <div className="flex items-center gap-8 md:gap-16 z-10">
                  <div className="text-center">
                     <span className="block text-4xl md:text-7xl font-oswald font-bold text-blue-500">{gs?.allied_score || 0}</span>
-                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-blue-300">Allies</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-blue-300 max-w-[120px] truncate">{alliesName}</span>
                  </div>
                  <div className="h-10 md:h-16 w-px bg-white/10 skew-x-12"></div>
                  <div className="text-center">
                     <span className="block text-4xl md:text-7xl font-oswald font-bold text-red-500">{gs?.axis_score || 0}</span>
-                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-red-300">Axis</span>
+                    <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-red-300 max-w-[120px] truncate">{axisName}</span>
                  </div>
               </div>
             </div>
@@ -349,7 +361,7 @@ const Dashboard: React.FC = () => {
               <TeamColumn 
                 teamData={data.team_view.allies} 
                 allStats={data.stats || []} 
-                teamName="Allied Forces" 
+                teamName={alliesName}
                 theme="blue" 
                 highlights={processedStats.highlights}
               />
@@ -358,7 +370,7 @@ const Dashboard: React.FC = () => {
               <TeamColumn 
                 teamData={data.team_view.axis} 
                 allStats={data.stats || []} 
-                teamName="Axis Forces" 
+                teamName={axisName}
                 theme="red" 
                 highlights={processedStats.highlights}
               />
@@ -511,19 +523,22 @@ const TeamColumn = ({ teamData, allStats, teamName, theme, highlights }: any) =>
 
       {/* Squads */}
       <div className="space-y-4">
-        {Object.values(squads).map((squad: any, idx: number) => {
+        {Object.entries(squads).map(([squadName, squad]: [string, any], idx: number) => {
           // Squad Aggregation Safe Check: Use .players instead of .members
-          const members = squad.players || [];
+          const members = squad?.players || [];
           const squadKills = members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.kills || 0), 0);
           const squadCombat = members.reduce((acc: number, m: any) => acc + (findStats(m.player_id)?.combat || 0), 0);
           
+          // Format the squad name nicely (e.g. "able" -> "Able")
+          const displayName = squadName.charAt(0).toUpperCase() + squadName.slice(1);
+
           return (
             <div key={idx} className={`border border-white/5 bg-black/20 hover:border-white/10 transition-colors`}>
               {/* Squad Header */}
               <div className="bg-white/5 px-3 py-2 flex justify-between items-center border-b border-white/5">
                  <div className="flex items-center gap-3">
                    <span className="text-sm opacity-70">{squad.type === 'armor' ? '🛡️' : squad.type === 'recon' ? '🔭' : '⚔️'}</span>
-                   <span className={`font-oswald font-bold uppercase tracking-wider text-sm ${textColor}`}>{squad.squad_name}</span>
+                   <span className={`font-oswald font-bold uppercase tracking-wider text-sm ${textColor}`}>{displayName}</span>
                  </div>
                  <div className="flex gap-4 text-[9px] font-mono text-zinc-500">
                     <span title="Squad Kills">K: {squadKills}</span>

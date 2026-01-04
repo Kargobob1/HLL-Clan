@@ -11,14 +11,20 @@ const PROXY_ENDPOINT = '/api/game-stats';
 export interface GameState {
   allied_score: number;
   axis_score: number;
-  time_remaining: string;
+  time_remaining: number; // Keep for backward compat if needed, but we rely on raw
+  raw_time_remaining: string; // e.g. "1:23:45"
   current_map: {
     pretty_name: string;
     name: string;
-  } | string;
+    map: {
+      allies: { name: string }; // e.g. "us"
+      axis: { name: string };   // e.g. "ger"
+    };
+  };
   num_allied_players: number;
   num_axis_players: number;
   next_map?: string;
+  players?: any; // Fallback structure
 }
 
 export interface PlayerCombatStats {

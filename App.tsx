@@ -107,7 +107,7 @@ const App: React.FC = () => {
             
             <Features />
             <TeamSection />
-            <ServerStatus />
+            <ServerStatus onNavigate={togglePage} />
             
             <section id="roles" className="py-16 md:py-24 lg:py-32 bg-[var(--bg-offset)] border-y border-[var(--border)] transition-colors duration-500">
                <div className="container mx-auto px-4">
