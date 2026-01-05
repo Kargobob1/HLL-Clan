@@ -4,6 +4,8 @@ import { api, FullScoreboardData, PlayerCombatStats, SquadMember, TeamData } fro
 
 // --- Icons & Config ---
 
+const MIN_PLAYERS_THRESHOLD = 10; // "Der Türsteher": Mindestanzahl für Broadcast (jetzt 10)
+
 const ROLE_ICONS: Record<string, React.ReactNode> = {
   'armycommander': <span title="Commander">⭐</span>,
   'officer': <span title="Squad Leader">⚡</span>,
@@ -209,6 +211,31 @@ const Dashboard: React.FC = () => {
     };
   }, [data]);
 
+  // Calculate Top Performers for Broadcast (Logik vom Python Script)
+  const topPerformers = useMemo(() => {
+    // 1. Der "Türsteher": Erst prüfen ob genug Spieler da sind
+    const totalPlayers = (data?.gamestate?.num_allied_players || 0) + (data?.gamestate?.num_axis_players || 0);
+    
+    if (totalPlayers < MIN_PLAYERS_THRESHOLD) {
+      return null; // Zu wenig Spieler -> Kein Broadcast
+    }
+
+    if (!processedStats.players.length) return null;
+
+    // 2. & 3. Die "Sortieranlage": Filter > 0, Sortieren, Top 3
+    const getTop = (key: keyof PlayerCombatStats) => 
+      [...processedStats.players]
+        .filter(p => (p[key] as number) > 0) // Nur Punkte > 0
+        .sort((a, b) => (b[key] as number) - (a[key] as number)) // Absteigend sortieren
+        .slice(0, 3); // Top 3 abschneiden
+
+    return {
+      offense: getTop('offense'),
+      defense: getTop('defense'),
+      support: getTop('support')
+    };
+  }, [processedStats.players, data?.gamestate]);
+
   const sortedAndFilteredPlayers = useMemo(() => {
     let filtered = processedStats.players.filter(p => {
       if (filterTeam !== 'all' && p.team !== filterTeam) return false;
@@ -236,6 +263,7 @@ const Dashboard: React.FC = () => {
   const mapName = gs?.current_map?.pretty_name || "Unknown Map";
   const alliesName = getFactionName(gs?.current_map?.map?.allies?.name);
   const axisName = getFactionName(gs?.current_map?.map?.axis?.name);
+  const totalPlayerCount = (gs?.num_allied_players || 0) + (gs?.num_axis_players || 0);
 
   return (
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text-main)] pt-24 pb-20 px-2 md:px-4 font-inter">
@@ -311,6 +339,36 @@ const Dashboard: React.FC = () => {
              </div>
           </div>
         </div>
+
+        {/* --- Top Player Broadcast (Logic from Python) --- */}
+        {totalPlayerCount >= MIN_PLAYERS_THRESHOLD && topPerformers && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <TopPerformerCard 
+                    title="TOP OFFENSE" 
+                    icon="⚔️" 
+                    players={topPerformers.offense} 
+                    metric="offense" 
+                    color="text-red-400" 
+                    border="border-red-500/20" 
+                />
+                <TopPerformerCard 
+                    title="TOP DEFENSE" 
+                    icon="🛡️" 
+                    players={topPerformers.defense} 
+                    metric="defense" 
+                    color="text-blue-400" 
+                    border="border-blue-500/20" 
+                />
+                <TopPerformerCard 
+                    title="TOP SUPPORT" 
+                    icon="📦" 
+                    players={topPerformers.support} 
+                    metric="support" 
+                    color="text-yellow-400" 
+                    border="border-yellow-500/20" 
+                />
+            </div>
+        )}
 
         {/* --- View Controls --- */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-white/10 pb-4 sticky top-20 bg-[var(--bg-deep)]/95 backdrop-blur z-40 pt-2">
@@ -448,6 +506,29 @@ const Dashboard: React.FC = () => {
 };
 
 // --- Sub-Components ---
+
+const TopPerformerCard = ({ title, icon, players, metric, color, border }: any) => (
+  <div className={`bg-black/20 border border-white/5 ${border} p-4 relative overflow-hidden group`}>
+    <div className="absolute top-0 right-0 p-2 opacity-10 text-3xl grayscale group-hover:grayscale-0 transition-all">{icon}</div>
+    <h4 className={`text-[10px] font-black uppercase tracking-[0.2em] ${color} mb-3 border-b border-white/5 pb-2`}>{title}</h4>
+    
+    {players.length === 0 ? (
+       <div className="text-xs text-zinc-600 italic">Keine Daten</div>
+    ) : (
+       <div className="space-y-2">
+         {players.map((p: any, i: number) => (
+           <div key={p.player_id} className="flex justify-between items-center text-xs">
+             <div className="flex items-center gap-2">
+               <span className="font-mono text-zinc-600 text-[10px]">0{i+1}</span>
+               <span className="text-zinc-300 font-bold max-w-[120px] truncate">{p.player}</span>
+             </div>
+             <span className={`font-mono ${color}`}>{p[metric]}</span>
+           </div>
+         ))}
+       </div>
+    )}
+  </div>
+);
 
 const StatBar = ({ label, allied, axis }: { label: string, allied: number, axis: number }) => {
   const total = allied + axis || 1;

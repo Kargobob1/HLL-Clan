@@ -1,6 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
-import { api, FullScoreboardData } from '../services/apiService.ts';
+import React, { useEffect, useState, useMemo } from 'react';
+import { api, FullScoreboardData, PlayerCombatStats } from '../services/apiService.ts';
 
 interface ServerStatusProps {
   onNavigate: (page: 'home' | 'dashboard') => void;
@@ -19,6 +19,9 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ onNavigate }) => {
       }
     };
     fetchStatus();
+    // Optional: Poll every 30s
+    const interval = setInterval(fetchStatus, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const mapName = status?.gamestate?.current_map?.pretty_name || "Karte wird geladen...";
@@ -29,7 +32,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ onNavigate }) => {
   return (
     <section id="server" className="py-24 bg-transparent relative">
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="inline-block px-4 py-1 rounded-none bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-[var(--accent)] text-[10px] font-bold tracking-[0.3em] uppercase mb-6 animate-pulse">
             Status: Online
           </div>
