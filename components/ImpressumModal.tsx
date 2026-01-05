@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface ImpressumModalProps {
@@ -28,27 +29,27 @@ const ImpressumModal: React.FC<ImpressumModalProps> = ({ isOpen, onClose }) => {
 
         <div className="p-8 bg-[var(--bg-offset)] text-zinc-300 font-light space-y-6">
           <section>
-            <h3 className="font-oswald text-[var(--accent)] text-lg mb-2 uppercase">Angaben gemäß § 5 TMG / ECG</h3>
+            <h3 className="font-oswald text-[var(--accent)] text-lg mb-2 uppercase">Angaben gemäß § 5 TMG</h3>
             <p className="leading-relaxed">
-              Florian Higl<br />
-              Mühlsangergasse 42<br />
-              1110 Wien
+              Steffen Korinth<br />
+              Hofäcker 17<br />
+              91631 Wettringen
             </p>
           </section>
 
           <section>
             <h3 className="font-oswald text-[var(--accent)] text-lg mb-2 uppercase">Kontakt</h3>
             <p className="leading-relaxed">
-              E-Mail: higlwien@gmail.com
+              E-Mail: info@taktisches-totalversagen.de
             </p>
           </section>
 
           <section className="pt-4 border-t border-[var(--primary)]/30">
             <h3 className="font-oswald text-[var(--accent)] text-sm mb-2 uppercase">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
             <p className="text-sm leading-relaxed">
-              Florian Higl<br />
-              Mühlsangergasse 42<br />
-              1110 Wien
+              Steffen Korinth<br />
+              Hofäcker 17<br />
+              91631 Wettringen
             </p>
           </section>
         </div>
