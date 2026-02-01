@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const Hero: React.FC = () => {
@@ -24,7 +25,7 @@ const Hero: React.FC = () => {
           />
         </div>
         
-        <h1 className="text-5xl md:text-9xl font-black mb-6 tracking-tighter leading-none text-white font-oswald text-glow italic">
+        <h1 className="text-4xl sm:text-5xl md:text-9xl font-black mb-6 tracking-tighter leading-none text-white font-oswald text-glow italic">
           TAKTISCHES <br />
           <span className="text-[var(--accent)] not-italic">TOTALVERSAGEN</span>
         </h1>

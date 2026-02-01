@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar.tsx';
 import Hero from './components/Hero.tsx';
 import Features from './components/Features.tsx';
+import SatchelRoulette from './components/SatchelRoulette.tsx';
 import TeamSection from './components/TeamSection.tsx';
 import ServerStatus from './components/ServerStatus.tsx';
 import Dashboard from './components/Dashboard.tsx';
@@ -44,7 +45,7 @@ const App: React.FC = () => {
                       </h2>
                       <p className="text-lg md:text-xl leading-relaxed text-zinc-400 font-light">
                         Willkommen beim <span className="text-white font-bold">Taktischen Totalversagen</span>. 
-                        Wir sind eine Ü30 Multigaming-Community, die den Ernst des Lebens an der <span className="hidden md:inline">Garderobe abgibt.</span> 
+                        Wir sind eine Ü30 Multigaming-Community, die den Ernst des Lebens an der Garderobe abgibt.
                       </p>
                       
                       <div className="grid grid-cols-2 gap-8 md:gap-12 py-4 border-y border-[var(--border)]">
@@ -106,6 +107,7 @@ const App: React.FC = () => {
             </section>
             
             <Features />
+            <SatchelRoulette />
             <TeamSection />
             <ServerStatus onNavigate={togglePage} />
             
@@ -115,15 +117,17 @@ const App: React.FC = () => {
                     <h2 className="text-3xl md:text-5xl font-bold text-white font-oswald mb-6 tracking-widest italic">DIE RÄNGE</h2>
                     <div className="w-24 md:w-32 h-1 bg-[var(--accent)] mx-auto"></div>
                  </div>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-7xl mx-auto">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
                     {[
-                      { role: '@Besucher', color: 'border-blue-500/40 text-blue-400 bg-blue-500/5', desc: 'Gäste, die unsere Voice Kanäle für gemeinsames Zusammenspiel nutzen können.' },
-                      { role: '@Anwärter', color: 'border-green-600/40 text-green-500 bg-green-500/5', desc: 'Die 3-monatige Probezeit für alle, die vollwertiges Mitglied werden wollen.' },
-                      { role: '@Member', color: 'border-yellow-500/40 text-yellow-500 bg-yellow-500/5', desc: 'Vollwertige Kameraden nach der Probezeit.' },
-                      { role: '@Moderator', color: 'border-orange-500/40 text-orange-500 bg-orange-500/5', desc: 'Gründungsmitglieder und Administratoren unserer Infrastruktur.' }
+                      { role: '@Senat', color: 'border-fuchsia-500/40 text-fuchsia-500 bg-fuchsia-500/5', desc: 'Die Gründer und die oberste Führungsebene der Community.' },
+                      { role: '@Konsul', color: 'border-cyan-400/40 text-cyan-400 bg-cyan-400/5', desc: 'Administrative Leitung und Entscheidungsträger.' },
+                      { role: '@Präfekt', color: 'border-emerald-400/40 text-emerald-400 bg-emerald-400/5', desc: 'Die Wächter über Ordnung und Einhaltung der Regeln.' },
+                      { role: '@Legionär', color: 'border-yellow-500/40 text-yellow-500 bg-yellow-500/5', desc: 'Die Elite. Vollwertige Mitglieder und Kern der Truppe.' },
+                      { role: '@Gladiator', color: 'border-orange-400/40 text-orange-400 bg-orange-400/5', desc: 'Kampferprobte Mitglieder, die sich ihren Platz verdienen.' },
+                      { role: '@Frischling', color: 'border-zinc-500/40 text-zinc-400 bg-zinc-500/5', desc: 'Neue Rekruten, die ihre ersten Schritte auf dem Schlachtfeld machen.' }
                     ].map((item, idx) => (
-                      <div key={idx} className={`p-6 md:p-10 border transition-all hover:-translate-y-2 cursor-default ${item.color}`}>
-                        <div className="text-xl md:text-2xl font-bold mb-4 md:mb-6 font-oswald tracking-widest italic">{item.role}</div>
+                      <div key={idx} className={`p-6 md:p-8 border transition-all hover:-translate-y-2 cursor-default ${item.color}`}>
+                        <div className="text-xl md:text-2xl font-bold mb-3 md:mb-4 font-oswald tracking-widest italic">{item.role}</div>
                         <p className="text-zinc-400 text-xs md:text-sm leading-relaxed font-light">{item.desc}</p>
                       </div>
                     ))}
