@@ -12,6 +12,7 @@ import Footer from './components/Footer.tsx';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<'home' | 'dashboard'>('home');
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(true);
 
   // Sync scroll on page change
   useEffect(() => {
@@ -21,6 +22,30 @@ const App: React.FC = () => {
   const togglePage = (page: 'home' | 'dashboard') => {
     setCurrentPage(page);
   };
+
+  if (isMaintenanceMode) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-deep)] text-[var(--text-main)] p-4 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[var(--noise-opacity)] pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[var(--primary)]/20 blur-[120px] rounded-full"></div>
+        
+        <div className="glass-card p-8 md:p-16 max-w-2xl w-full border-t-4 border-t-[var(--accent)] relative z-10 animate-reveal">
+          <div className="w-20 h-20 bg-[var(--primary)]/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-[var(--primary)]/50">
+            <svg className="w-10 h-10 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white font-oswald tracking-widest mb-6">WARTUNGSARBEITEN</h1>
+          <p className="text-zinc-400 text-lg mb-10 font-light leading-relaxed">
+            Wir führen derzeit wichtige Updates an unseren Systemen durch. <br className="hidden md:block" />
+            Das Taktische Totalversagen ist bald wieder für euch da.
+          </p>
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-zinc-900/80 border border-zinc-800 text-zinc-400 text-xs font-bold tracking-[0.2em] uppercase rounded-sm">
+            <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+            System-Update läuft
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-[var(--bg-deep)] text-[var(--text-main)] transition-colors duration-500">
