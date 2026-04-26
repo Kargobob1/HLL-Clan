@@ -44,6 +44,31 @@ const formatTime = (seconds: number) => {
 // --- Components ---
 
 const Dashboard: React.FC = () => {
+  return (
+    <div className="pt-32 pb-16 min-h-screen flex flex-col items-center justify-center p-4 relative">
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[var(--noise-opacity)] pointer-events-none"></div>
+        <div className="max-w-3xl mx-auto text-center z-10 glass-card p-8 md:p-16 border-t-4 border-t-yellow-500 relative overflow-hidden animate-reveal">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl"></div>
+          <div className="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-yellow-500/30 relative">
+            <div className="absolute inset-0 bg-yellow-500/20 rounded-full animate-ping opacity-20"></div>
+            <svg className="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-bold text-white font-oswald tracking-widest mb-6">ZENTRALE OFFLINE</h2>
+          <p className="text-zinc-400 text-sm md:text-lg mb-10 font-light leading-relaxed">
+            Aufgrund der jüngsten System-Updates wird der Einsatz-Monitor aktuell überarbeitet. 
+            <br className="hidden md:block" />
+            Die Taktik-Daten stehen in Kürze wieder zur Verfügung.
+          </p>
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-zinc-900/80 border border-zinc-800 text-zinc-400 text-xs font-bold tracking-[0.2em] uppercase rounded-sm">
+            <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+            System_Upgrade_in_Progress
+          </div>
+        </div>
+    </div>
+  );
+
   const [data, setData] = useState<FullScoreboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);

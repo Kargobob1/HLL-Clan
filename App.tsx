@@ -12,7 +12,7 @@ import Footer from './components/Footer.tsx';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<'home' | 'dashboard'>('home');
-  const [isMaintenanceMode, setIsMaintenanceMode] = useState(true);
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
 
   // Sync scroll on page change
   useEffect(() => {
@@ -87,18 +87,24 @@ const App: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="p-6 md:p-10 glass-card border-l-8 border-l-[var(--primary)] relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-[var(--primary)]/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform"></div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-4 font-oswald tracking-widest uppercase">Der Einsatz-Monitor</h3>
+                      <div className="p-6 md:p-10 glass-card border-l-8 border-yellow-500/50 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-yellow-500/5 rounded-full -mr-16 -mt-16 transition-transform"></div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[10px] font-bold tracking-wider uppercase mb-4">
+                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span>
+                          System Update
+                        </div>
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-4 font-oswald tracking-widest uppercase flex items-center gap-3">
+                          Der Einsatz-Monitor
+                        </h3>
                         <p className="text-zinc-400 mb-8 font-light text-sm md:text-base">
-                          Behalte die Front im Blick. Unser Live-Dashboard zeigt dir Echtzeit-Daten von unseren Servern.
+                          Unsere Zentrale wird aktuell mit den neuesten Sicherheitsstandards ausgestattet und bleibt kurzfristig offline. Bald wieder verfügbar.
                         </p>
                         <button 
-                          onClick={() => togglePage('dashboard')}
-                          className="btn-primary inline-flex items-center gap-4 px-6 py-3 md:px-8 md:py-4 font-oswald tracking-widest uppercase text-xs md:text-sm w-full md:w-auto justify-center"
+                          disabled
+                          className="bg-zinc-800/50 border border-zinc-700/50 text-zinc-500 cursor-not-allowed inline-flex items-center gap-4 px-6 py-3 md:px-8 md:py-4 font-oswald tracking-widest uppercase text-xs md:text-sm w-full md:w-auto justify-center"
                         >
-                          Zentrale öffnen
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                          Momentan Offline
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         </button>
                       </div>
                     </div>
